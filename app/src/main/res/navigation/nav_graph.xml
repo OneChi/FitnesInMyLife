@@ -4,6 +4,6 @@
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
             app:startDestination="@id/userPage">
 
-    <fragment android:id="@+id/userPage" android:name="ru.vanchikov.fitnesinmylife.UserPage"
+    <fragment android:id="@+id/userPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.UserPage"
               android:label="fragment_user_page" tools:layout="@layout/fragment_user_page"/>
 </navigation>

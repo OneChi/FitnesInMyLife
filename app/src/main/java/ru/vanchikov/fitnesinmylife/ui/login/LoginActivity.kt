@@ -74,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
                 password.text.toString()
             )
         }
-        //рууу
+
 
         password.apply {
             afterTextChanged {

@@ -69,13 +69,10 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             R.id.nav_home -> {
                 // Handle the camera action
             }
-            R.id.nav_gallery -> {
+            R.id.nav_ways -> {
 
             }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_tools -> {
+            R.id.nav_map -> {
 
             }
             R.id.nav_share -> {

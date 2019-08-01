@@ -1,4 +1,4 @@
-package ru.vanchikov.fitnesinmylife
+package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments
 
 
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ru.vanchikov.fitnesinmylife.R
 
 
 // TODO: Rename parameter arguments, choose names that match
