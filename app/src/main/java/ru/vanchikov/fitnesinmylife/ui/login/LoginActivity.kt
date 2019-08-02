@@ -53,19 +53,21 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
 
-            loading.visibility = View.GONE
+            loading.visibility = View.VISIBLE
             if (loginResult.error != null) {
                 showLoginFailed(loginResult.error)
+                loading.visibility = View.INVISIBLE
             }
             if (loginResult.success != null) {
                 updateUiWithUser(loginResult.success)
+                //Complete and destroy login activity once successful
+                val intent: Intent = Intent(this, NavigationActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             setResult(Activity.RESULT_OK)
 
-            //Complete and destroy login activity once successful
-            val intent: Intent = Intent(this, NavigationActivity::class.java)
-            startActivity(intent)
-            finish()
+
         })
 
         username.afterTextChanged {
