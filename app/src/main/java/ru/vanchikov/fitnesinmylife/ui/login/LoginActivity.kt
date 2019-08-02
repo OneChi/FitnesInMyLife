@@ -11,10 +11,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.ui.Navigation.NavigationActivity
@@ -23,10 +20,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
+
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
@@ -106,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
+        val displayName = model.displayName + "!"
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,

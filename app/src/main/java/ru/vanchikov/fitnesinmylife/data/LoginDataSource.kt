@@ -1,5 +1,6 @@
 package ru.vanchikov.fitnesinmylife.data
 
+import android.widget.Toast
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import java.io.IOException
 import java.lang.Exception
@@ -15,9 +16,11 @@ class LoginDataSource {
 
            val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
-            if ((username == NewLoggedInUser.email)and (password == NewLoggedInUser.password))
+            if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
             //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-            return Result.Success(NewLoggedInUser)
+                UserAccount.user = NewLoggedInUser
+                return Result.Success(NewLoggedInUser)
+            }
             else
                 throw Exception("bad pass or login")
 
