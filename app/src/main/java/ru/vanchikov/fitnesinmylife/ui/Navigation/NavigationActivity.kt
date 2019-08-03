@@ -24,7 +24,15 @@ import ru.vanchikov.fitnesinmylife.ui.login.LoginViewModel
 import ru.vanchikov.fitnesinmylife.ui.login.LoginViewModelFactory
 import android.app.Dialog
 import android.widget.Toast
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import ru.vanchikov.fitnesinmylife.data.UserAccount
+import androidx.navigation.ui.NavigationUI
+
+import androidx.navigation.NavController
+import androidx.navigation.ui.onNavDestinationSelected
 
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -38,8 +46,11 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(ru.vanchikov.fitnesinmylife.R.layout.activity_navigation)
         val toolbar: Toolbar = findViewById(ru.vanchikov.fitnesinmylife.R.id.toolbar)
+        val navController = Navigation.findNavController(this, ru.vanchikov.fitnesinmylife.R.id.nav_host_fragment)
 
+        NavigationUI.setupWithNavController(toolbar, navController)
         setSupportActionBar(toolbar)
+
 
         val fab: FloatingActionButton = findViewById(ru.vanchikov.fitnesinmylife.R.id.fab)
         fab.setOnClickListener { view ->
@@ -47,6 +58,10 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                 .setAction("Action", null).show()
         }
         val drawerLayout: DrawerLayout = findViewById(ru.vanchikov.fitnesinmylife.R.id.drawer_layout)
+        val appBarConfiguration = AppBarConfiguration.Builder(navController.graph).setDrawerLayout(drawerLayout).build()
+
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+
         val navView: NavigationView = findViewById(ru.vanchikov.fitnesinmylife.R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_open, ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_close
@@ -74,8 +89,8 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(ru.vanchikov.fitnesinmylife.R.menu.navigation, menu)
 
-        nav_header_login = findViewById<TextView>(R.id.nav_header_login)
-        nav_header_email = findViewById<TextView>(R.id.nav_header_email)
+        nav_header_login = findViewById<TextView>(ru.vanchikov.fitnesinmylife.R.id.nav_header_login)
+        nav_header_email = findViewById<TextView>(ru.vanchikov.fitnesinmylife.R.id.nav_header_email)
 
         nav_header_login.text = UserAccount.user.displayName
         nav_header_email.text = UserAccount.user.email
@@ -87,9 +102,12 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        val navController = findNavController(R.id.nav_host_fragment)
+        //NavigationUI.onNavDestinationSelected(item, navController)
         return when (item.itemId) {
             ru.vanchikov.fitnesinmylife.R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+
+            else ->item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
         }
     }
 
@@ -97,13 +115,13 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         // Handle navigation view item clicks here.
         when (item.itemId) {
             ru.vanchikov.fitnesinmylife.R.id.nav_home -> {
-                // Handle the camera action
+                Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.userPage)
             }
             ru.vanchikov.fitnesinmylife.R.id.nav_ways -> {
-
+                //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.mapPage)
             }
-            ru.vanchikov.fitnesinmylife.R.id.nav_map -> {
-
+            ru.vanchikov.fitnesinmylife.R.id.mapPage -> {
+                Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.mapPage)
             }
             ru.vanchikov.fitnesinmylife.R.id.nav_share -> {
 

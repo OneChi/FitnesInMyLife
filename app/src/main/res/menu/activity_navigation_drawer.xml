@@ -11,7 +11,7 @@
                 android:id="@+id/nav_ways"
                 android:title="@string/menu_ways"/>
         <item
-                android:id="@+id/nav_map"
+                android:id="@+id/mapPage"
                 android:title="@string/menu_map"/>
     </group>
 
