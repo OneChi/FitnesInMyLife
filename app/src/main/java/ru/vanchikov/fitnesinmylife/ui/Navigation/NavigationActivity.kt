@@ -65,6 +65,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout = drawer_layout)
 
 
+
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_open, ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_close
