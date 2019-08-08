@@ -10,6 +10,6 @@
               class="com.google.android.gms.maps.MapFragment"
               android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage"
               android:label="Map" tools:layout="@layout/fragment_map_page"/>
-    <fragment android:id="@+id/storyPage" android:name="ru.vanchikov.fitnesinmylife.StoryPage"
+    <fragment android:id="@+id/storyPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage"
               android:label="Ways" tools:layout="@layout/fragment_story_page"/>
 </navigation>

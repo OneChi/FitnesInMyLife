@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.app_bar_navigation.*
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
+import java.text.FieldPosition
 
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +38,9 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
+
+
+
 
         initMenu()
 
@@ -54,11 +58,12 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         // обеспечивает поддержку логинап и почты в оглавлении бокового меню NavDrawer
         setSupportActionBar(toolbar)
 
+        /*
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
-        }
+        }*/
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
@@ -121,7 +126,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                 ru.vanchikov.fitnesinmylife.R.id.userPage -> {
                 //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.userPage)
             }
-            ru.vanchikov.fitnesinmylife.R.id.nav_ways -> {
+            ru.vanchikov.fitnesinmylife.R.id.storyPage -> {
                 //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.mapPage)
             }
             ru.vanchikov.fitnesinmylife.R.id.mapPage -> {

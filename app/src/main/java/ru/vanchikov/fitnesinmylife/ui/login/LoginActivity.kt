@@ -32,6 +32,11 @@ class LoginActivity : AppCompatActivity() {
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
 
+        // TODO: DELETE AFTER TESTING
+        username.setText("a@b.c")
+        password.setText("qqqqq") //add  1 - "q" at the end
+
+
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
