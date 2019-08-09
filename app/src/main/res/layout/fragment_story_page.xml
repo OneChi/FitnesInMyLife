@@ -6,7 +6,7 @@
                                                      android:layout_height="match_parent"
                                                      tools:context=".ui.Navigation.fragments.StoryPage"
                                                      android:orientation="vertical">
-    <ListView
+    <ExpandableListView
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:id="@+id/lvWays"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
