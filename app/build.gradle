@@ -25,29 +25,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        pickFirst("META-INF/atomicfu.kotlin_module")
+    }
     buildToolsVersion = '28.0.3'
 }
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-
         jvmTarget = "1.8"
-    }
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
     }
 }
 
 dependencies {
 
+    def nav_version = "2.1.0-beta02"
     def nav_version_ktx = "2.1.0-beta02"
 
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version_ktx"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version_ktx"
-
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -80,5 +76,11 @@ dependencies {
     // Coroutines
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines"
+}
 
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }

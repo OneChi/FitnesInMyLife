@@ -1,13 +1,12 @@
 package ru.vanchikov.fitnesinmylife.ui.login
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
+import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.LoginRepository
 import ru.vanchikov.fitnesinmylife.data.Result
-
-import ru.vanchikov.fitnesinmylife.R
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -17,17 +16,12 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun getLogin() : MutableLiveData<LoginResult> {
-        return _loginResult
-    }
-
-
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
         val result = loginRepository.login(username, password)
 
         if (result is Result.Success) {
-            _loginResult.value = LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+            _loginResult.value = LoginResult(success = LoggedInUserView(user = result.data))
         } else {
             _loginResult.value = LoginResult(error = R.string.login_failed)
         }

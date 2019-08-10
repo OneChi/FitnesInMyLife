@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 
 import ru.vanchikov.fitnesinmylife.R
+import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.ui.Navigation.NavigationActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -66,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
                 updateUiWithUser(loginResult.success)
                 //Complete and destroy login activity once successful
                 val intent: Intent = Intent(this, NavigationActivity::class.java)
+                UserAccount.user = loginResult.success.user
                 startActivity(intent)
                 finish()
             }
@@ -110,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName + "!"
+        val displayName = model.user.displayName + "!"
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,

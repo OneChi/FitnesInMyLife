@@ -18,7 +18,6 @@ class LoginDataSource {
 
             if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
             //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-                UserAccount.user = NewLoggedInUser
                 return Result.Success(NewLoggedInUser)
             }
             else
