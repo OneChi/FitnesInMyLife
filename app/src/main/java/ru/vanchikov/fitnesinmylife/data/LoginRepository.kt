@@ -1,6 +1,8 @@
 package ru.vanchikov.fitnesinmylife.data
 
+import androidx.lifecycle.LiveData
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
+import java.io.IOException
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -8,6 +10,9 @@ import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
  */
 
 class LoginRepository(val dataSource: LoginDataSource) {
+
+
+    val allUsers: LiveData<List<LoggedInUser>> = dataSource.getAlphabetizedUsers()
 
     // in-memory cache of the loggedInUser object
     var user: LoggedInUser? = null
@@ -25,12 +30,30 @@ class LoginRepository(val dataSource: LoginDataSource) {
 
     fun logout() {
         user = null
-        dataSource.logout()
+        //dataSource.logout()
     }
 
     fun login(username: String, password: String): Result<LoggedInUser> {
         // handle login
-        val result = dataSource.login(username, password)
+
+        var result : Result<LoggedInUser>
+
+        try {
+            // TODO: handle loggedInUser authentication
+            val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
+
+            if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
+                //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
+                result =  Result.Success(NewLoggedInUser)
+            }
+            else
+                throw Exception("bad pass or login")
+
+        } catch (e: Throwable) {
+            result =  Result.Error(IOException("Error logging in", e))
+        }
+
+
 
         if (result is Result.Success) {
             setLoggedInUser(result.data)
@@ -45,3 +68,30 @@ class LoginRepository(val dataSource: LoginDataSource) {
         // @see https://developer.android.com/training/articles/keystore
     }
 }
+
+/*
+     fun login(username: String, password: String): Result<LoggedInUser> {
+        val result :
+        try {
+            // TODO: handle loggedInUser authentication
+
+           val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
+
+            if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
+            //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
+                 result =  Result.Success(NewLoggedInUser)
+            }
+            else
+                throw Exception("bad pass or login")
+
+        } catch (e: Throwable) {
+             result =  Result.Error(IOException("Error logging in", e))
+        }
+    }
+
+    fun logout() {
+        // TODO: revoke authentication
+        //null
+    }
+*
+* */

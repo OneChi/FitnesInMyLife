@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
         password.setText("qqqqq") //add  1 - "q" at the end
 
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
+        loginViewModel = ViewModelProviders.of(this)
             .get(LoginViewModel::class.java)
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {

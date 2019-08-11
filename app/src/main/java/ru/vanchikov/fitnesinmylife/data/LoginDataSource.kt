@@ -1,36 +1,28 @@
 package ru.vanchikov.fitnesinmylife.data
 
-import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import java.io.IOException
-import java.lang.Exception
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
-class LoginDataSource {
+@Dao
+interface LoginDataSource {
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
-        try {
-            // TODO: handle loggedInUser authentication
+    @Query("SELECT * from users_table ORDER BY email ASC")
+    fun getAlphabetizedUsers(): LiveData<List<LoggedInUser>>
 
-           val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(user: LoggedInUser)
 
-            if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
-            //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-                return Result.Success(NewLoggedInUser)
-            }
-            else
-                throw Exception("bad pass or login")
+    @Query("DELETE FROM users_table")
+    suspend fun deleteAll()
 
-        } catch (e: Throwable) {
-            return Result.Error(IOException("Error logging in", e))
-        }
-    }
 
-    fun logout() {
-        // TODO: revoke authentication
-        //null
-    }
 }
 

@@ -1,20 +1,27 @@
 package ru.vanchikov.fitnesinmylife.ui.login
 
+import android.app.Application
 import android.util.Patterns
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.LoginRepository
 import ru.vanchikov.fitnesinmylife.data.Result
+import ru.vanchikov.fitnesinmylife.data.UsersRoomDatabase
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
+
+    private var loginRepository : LoginRepository
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
+
+    init {
+        val loginDao = UsersRoomDatabase.getDatabase(application, viewModelScope).getDao()
+        loginRepository = LoginRepository(loginDao)
+    }
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
