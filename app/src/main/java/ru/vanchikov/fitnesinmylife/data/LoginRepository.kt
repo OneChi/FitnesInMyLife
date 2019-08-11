@@ -1,8 +1,11 @@
 package ru.vanchikov.fitnesinmylife.data
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import java.io.IOException
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -40,11 +43,16 @@ class LoginRepository(val dataSource: LoginDataSource) {
 
         try {
             // TODO: handle loggedInUser authentication
-            val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
+            //val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
-            if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
+
+
+            val allUsersList = dataSource.getAlphabetizedUsers().waitForValue()
+
+            //if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
+            if (((username == allUsersList[0].email)or (username == allUsersList[0].userId)) and (password == allUsersList[0].password)){
                 //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-                result =  Result.Success(NewLoggedInUser)
+                result =  Result.Success(allUsersList[0])
             }
             else
                 throw Exception("bad pass or login")
@@ -66,6 +74,24 @@ class LoginRepository(val dataSource: LoginDataSource) {
         this.user = loggedInUser
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
+    }
+
+
+    @Throws(InterruptedException::class)
+    fun <T> LiveData<T>.waitForValue(): T {
+        val data = arrayOfNulls<Any>(1)
+        val latch = CountDownLatch(1)
+        val observer = object : Observer<T> {
+            override fun onChanged(o: T?) {
+                data[0] = o
+                latch.countDown()
+                this@waitForValue.removeObserver(this)
+            }
+        }
+        this.observeForever(observer)
+        latch.await(2, TimeUnit.SECONDS)
+
+        return data[0] as T
     }
 }
 
