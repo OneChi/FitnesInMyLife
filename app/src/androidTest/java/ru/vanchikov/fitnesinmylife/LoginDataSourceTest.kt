@@ -64,6 +64,8 @@ class WordDaoTest {
 
         wordDao.insert(NewLoggedInUser2)
         val allWords = wordDao.getAlphabetizedUsers().waitForValue()
+        val user = wordDao.getUserToken("a@b.c", "qqqqqq")
+        Assert.assertEquals(user.userId , "Alex")
         Assert.assertEquals(allWords[0].userId, NewLoggedInUser2.userId)
         Assert.assertEquals(allWords[1].userId, NewLoggedInUser1.userId)
     }

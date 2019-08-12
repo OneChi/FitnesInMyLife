@@ -45,14 +45,11 @@ class LoginRepository(val dataSource: LoginDataSource) {
             // TODO: handle loggedInUser authentication
             //val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
+           val token = dataSource.getUserToken(username, password)
 
+             if (token != null){
 
-            val allUsersList = dataSource.getAlphabetizedUsers().waitForValue()
-
-            //if (((username == NewLoggedInUser.email)or (username == NewLoggedInUser.userId)) and (password == NewLoggedInUser.password)){
-            if (((username == allUsersList[0].email)or (username == allUsersList[0].userId)) and (password == allUsersList[0].password)){
-                //val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-                result =  Result.Success(allUsersList[0])
+                 result = Result.Success(token)
             }
             else
                 throw Exception("bad pass or login")

@@ -17,6 +17,9 @@ interface LoginDataSource {
     @Query("SELECT * from users_table ORDER BY email ASC")
     fun getAlphabetizedUsers(): LiveData<List<LoggedInUser>>
 
+    @Query("SELECT * from users_table WHERE ((email = :userlogin ) OR (userId = :userlogin)) AND (password = :userpassword)")
+    fun getUserToken(userlogin : String, userpassword : String) : LoggedInUser
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(user: LoggedInUser)
 
