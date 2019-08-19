@@ -1,5 +1,6 @@
 package ru.vanchikov.fitnesinmylife.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
@@ -36,7 +37,7 @@ class LoginRepository(val dataSource: LoginDataSource) {
         //dataSource.logout()
     }
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
+    suspend fun login(username: String, password: String): Result<LoggedInUser> {
         // handle login
 
         var result : Result<LoggedInUser>
@@ -45,11 +46,11 @@ class LoginRepository(val dataSource: LoginDataSource) {
             // TODO: handle loggedInUser authentication
             //val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
-           val token = dataSource.getUserToken(username, password)
+            val token =  dataSource.getUserToken(username, password)
+            Log.w("LOG_REPOS","login = ${token.userId} and pass ${token.password}")
+            if (token != null){
 
-             if (token != null){
-
-                 result = Result.Success(token)
+                result = Result.Success(token)
             }
             else
                 throw Exception("bad pass or login")

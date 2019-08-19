@@ -3,6 +3,7 @@ package ru.vanchikov.fitnesinmylife.ui.login
 import android.app.Application
 import android.util.Patterns
 import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.LoginRepository
 import ru.vanchikov.fitnesinmylife.data.Result
@@ -19,20 +20,27 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val loginResult: LiveData<LoginResult> = _loginResult
 
     init {
-        val loginDao = UsersRoomDatabase.getDatabase(application, viewModelScope).getDao()
+        val loginDao = UsersRoomDatabase.getDatabase(application, viewModelScope).getUsersDao()
         loginRepository = LoginRepository(loginDao)
     }
 
-    fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
 
-        if (result is Result.Success) {
-            _loginResult.value = LoginResult(success = LoggedInUserView(user = result.data))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
+    fun getLogin(user: String, pass: String){
+        viewModelScope.launch { login(user,pass)}
     }
+
+    suspend fun login(username: String, password: String) {
+        // can be launched in a separate asynchronous job
+
+         val result = loginRepository.login(username, password)
+
+            if (result is Result.Success) {
+                _loginResult.postValue(LoginResult(success = LoggedInUserView(user = result.data)))
+            } else {
+                _loginResult.postValue(LoginResult(error = R.string.login_failed))
+            }
+        }
+
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
@@ -55,6 +63,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5;
+        return password.length > 5
     }
 }
