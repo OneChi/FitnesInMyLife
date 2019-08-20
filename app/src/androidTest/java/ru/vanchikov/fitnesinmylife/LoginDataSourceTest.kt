@@ -11,9 +11,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import ru.vanchikov.fitnesinmylife.data.LoginDataSource
+import ru.vanchikov.fitnesinmylife.data.UsersWaysDao
 import ru.vanchikov.fitnesinmylife.data.UsersRoomDatabase
-import ru.vanchikov.fitnesinmylife.data.WaysDao
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
 import ru.vanchikov.fitnesinmylife.data.model.Ways
@@ -26,9 +25,9 @@ class WordDaoTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var wordDao: LoginDataSource
+    private lateinit var wordWaysDao: UsersWaysDao
     private lateinit var db: UsersRoomDatabase
-    private lateinit var waysDao: WaysDao
+
 
     @Before
     fun createDb() {
@@ -39,8 +38,8 @@ class WordDaoTest {
             // Allowing main thread queries, just for testing.
             .allowMainThreadQueries()
             .build()
-        wordDao = db.getUsersDao()
-        waysDao = db.getWaysDao()
+        wordWaysDao = db.getUsersDao()
+
     }
 
     @After
@@ -54,8 +53,8 @@ class WordDaoTest {
     fun insertAndGetWord() = runBlocking {
         val NewLoggedInUser = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
-        wordDao.insert(NewLoggedInUser)
-        val allWords = wordDao.getAlphabetizedUsers().waitForValue()
+        wordWaysDao.insert(NewLoggedInUser)
+        val allWords = wordWaysDao.getAlphabetizedUsers().waitForValue()
         Assert.assertEquals(allWords[0].userId, NewLoggedInUser.userId)
     }
 
@@ -64,12 +63,12 @@ class WordDaoTest {
     fun getAllWords() = runBlocking {
         val NewLoggedInUser1 = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
-        wordDao.insert(NewLoggedInUser1)
+        wordWaysDao.insert(NewLoggedInUser1)
         val NewLoggedInUser2 = LoggedInUser("2","2","2", "a@2.c")
 
-        wordDao.insert(NewLoggedInUser2)
-        val allWords = wordDao.getAlphabetizedUsers().waitForValue()
-        val user = wordDao.getUserToken("a@b.c", "qqqqqq")
+        wordWaysDao.insert(NewLoggedInUser2)
+        val allWords = wordWaysDao.getAlphabetizedUsers().waitForValue()
+        val user = wordWaysDao.getUserToken("a@b.c", "qqqqqq")
         Assert.assertEquals(user.userId , "Alex")
         Assert.assertEquals(allWords[0].userId, NewLoggedInUser2.userId)
         Assert.assertEquals(allWords[1].userId, NewLoggedInUser1.userId)
@@ -80,12 +79,12 @@ class WordDaoTest {
     fun deleteAll() = runBlocking {
         val NewLoggedInUser1 = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
 
-        wordDao.insert(NewLoggedInUser1)
+        wordWaysDao.insert(NewLoggedInUser1)
         val NewLoggedInUser2 = LoggedInUser("2","2","2", "a@2.c")
 
-        wordDao.insert(NewLoggedInUser2)
-        wordDao.deleteAll()
-        val allWords = wordDao.getAlphabetizedUsers().waitForValue()
+        wordWaysDao.insert(NewLoggedInUser2)
+        wordWaysDao.deleteAll()
+        val allWords = wordWaysDao.getAlphabetizedUsers().waitForValue()
         Assert.assertTrue(allWords.isEmpty())
     }
 
@@ -105,42 +104,75 @@ class WordDaoTest {
         val NewLoggedInUser3 = LoggedInUser("Kerdan","Onethree","qqqqqq", "c@b.c")
         val NewLoggedInUser4 = LoggedInUser("Okes","Onefour","qqqqqq", "d@b.c")
 
-        wordDao.insert(NewLoggedInUser1)
-        wordDao.insert(NewLoggedInUser2)
-        wordDao.insert(NewLoggedInUser3)
-        wordDao.insert(NewLoggedInUser4)
+        wordWaysDao.insert(NewLoggedInUser1)
+        wordWaysDao.insert(NewLoggedInUser2)
+        wordWaysDao.insert(NewLoggedInUser3)
+        wordWaysDao.insert(NewLoggedInUser4)
 
         val way1 = UserWays(1,"Alex",242)
         val way2 = UserWays(2,"Alex",321)
         val way3 = UserWays(3,"Alex",542)
         val way4 = UserWays(4,"Alex",341)
-        val users = wordDao.getAlphabetizedUsers().waitForValue()
-        waysDao.insertWay(way1)
-        waysDao.insertWay(way2)
-        waysDao.insertWay(way3)
-        waysDao.insertWay(way4)
+
+        wordWaysDao.insertWay(way1)
+        wordWaysDao.insertWay(way2)
+        wordWaysDao.insertWay(way3)
+        wordWaysDao.insertWay(way4)
 
         val fix1 = Ways(1,12f,2.0,4.0,12312312,12f,"GPS",0)
         val fix2 = Ways(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
-        waysDao.insertFix(fix1)
-        waysDao.insertFix(fix2)
+        wordWaysDao.insertFix(fix1)
+        wordWaysDao.insertFix(fix2)
 
-        var ways =waysDao.getAllWays().waitForValue()
+
+
+
+        var ways =wordWaysDao.getAllWays().waitForValue()
+        wordWaysDao.deleteByWayId(ways[0].wayId)
+        ways.drop(ways.size)
+        var fixes = wordWaysDao.getAllFixes().waitForValue()
+        ways = wordWaysDao.getAllWays().waitForValue()
+        val users = wordWaysDao.getAlphabetizedUsers().waitForValue()
+
         Assert.assertTrue(!ways.isEmpty())
         //ways.drop(ways.size)
-        //wordDao.deleteUser("Alex")
+        //wordWaysDao.deleteUser("Alex")
         //ways = waysDao.getAllWays().waitForValue()
         //Assert.assertTrue(ways.isEmpty())
-        var fixes = waysDao.getAllFixes().waitForValue()
-        waysDao.deleteFix(fixes[0])
+
+        wordWaysDao.deleteFix(fixes[0])
         fixes.drop(fixes.size)
-        fixes = waysDao.getAllFixes().waitForValue()
+        fixes = wordWaysDao.getAllFixes().waitForValue()
         val a = fixes.isEmpty()
         Assert.assertTrue(fixes.isEmpty())
-        //wordDao.deleteAll()
-        //al allWords = wordDao.getAlphabetizedUsers().waitForValue()
+        //wordWaysDao.deleteAll()
+        //al allWords = wordWaysDao.getAlphabetizedUsers().waitForValue()
 
         //Assert.assertTrue(allWords.isEmpty())
     }
+    /*
+    suspend  insertWayFix(fix : Ways)
+    suspend  deleteFix(fix: Ways) : Int
+    suspend  insertWay(way: UserWays)
+    suspend  getUserTokenByLP(userlogin : String, userpassword : String) : LoggedInUser
+    suspend  insertUser(user: LoggedInUser)
+    suspend  deleteAllUsers()
 
+    getAllUsers(): LiveData<List<LoggedInUser>>
+
+    deleteUserByUserId(userId : String) : Int
+
+    allUserWaysByUserId(userId: String): LiveData<Array<UserWays>>
+
+    allWayFixByWayId(wayId: Int) : LiveData<Array<Ways>>
+
+    deleteFixByFixId(fixId : Double) : Int
+
+    getAllFixes() : LiveData<List<Ways>>
+
+    deleteWayById(wayId : Int) : Int
+
+    getAllWays(): LiveData<List<UserWays>>
+
+     */
 }

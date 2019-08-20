@@ -8,8 +8,15 @@ import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.SimpleExpandableListAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import ru.vanchikov.fitnesinmylife.data.DataViewModel
+import ru.vanchikov.fitnesinmylife.data.UserAccount
+import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import ru.vanchikov.fitnesinmylife.data.model.Ways
+
 //import javax.swing.UIManager.put
 
 
@@ -31,6 +38,10 @@ class StoryPage : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val dataViewModel = activity?.let { ViewModelProviders.of(it).get(DataViewModel::class.java)}
+
+
         // TODO: DELETE AFTER TEST'S
         names = arrayOf("дом", "работа", "отдых", "магазин", "красота", "здоровье")
         position = arrayOf(223,535,656,433,974,232)
@@ -72,6 +83,11 @@ class StoryPage : Fragment(), View.OnClickListener {
             groupData.add(m)
         }
 
+        //val userWaysArrayLD = dataViewModel?.allUserWaysByUserId(UserAccount.user.userId)
+        //var userWaysArray : ArrayList<UserWays>
+       // userWaysArrayLD?.observe(this, Observer { ways -> userWaysArray = ways })
+
+
 
         // список атрибутов групп для чтения
         val groupFrom = arrayOf("groupName")
@@ -79,6 +95,8 @@ class StoryPage : Fragment(), View.OnClickListener {
         val groupTo = intArrayOf(android.R.id.text1)
 
 
+
+        // val allUserWays = dataViewModel?.loginRepository,
         // создаем коллекцию для коллекций элементов
         childData = ArrayList()
 
@@ -113,6 +131,10 @@ class StoryPage : Fragment(), View.OnClickListener {
         }
         childData.add(childDataItem)
 
+
+
+
+
         // список атрибутов элементов для чтения
         val childFrom = arrayOf("phoneName")
         // список ID view-элементов, в которые будет помещены атрибуты элементов
@@ -131,7 +153,7 @@ class StoryPage : Fragment(), View.OnClickListener {
         )
 
 
-            lvMain.setAdapter(adapter)
+        lvMain.setAdapter(adapter)
 
     }
 

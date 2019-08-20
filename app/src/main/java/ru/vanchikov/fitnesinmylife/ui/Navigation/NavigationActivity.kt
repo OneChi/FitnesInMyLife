@@ -4,28 +4,25 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_navigation.*
-import kotlinx.android.synthetic.main.app_bar_navigation.*
 import ru.vanchikov.fitnesinmylife.R
+import ru.vanchikov.fitnesinmylife.data.DataViewModel
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
-import java.text.FieldPosition
 
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -123,7 +120,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-                ru.vanchikov.fitnesinmylife.R.id.userPage -> {
+            ru.vanchikov.fitnesinmylife.R.id.userPage -> {
                 //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.userPage)
             }
             ru.vanchikov.fitnesinmylife.R.id.storyPage -> {

@@ -19,9 +19,8 @@ import ru.vanchikov.fitnesinmylife.data.model.Ways
 @Database(entities = [LoggedInUser::class,UserWays::class,Ways::class], version = 1)
 abstract class UsersRoomDatabase : RoomDatabase() {
 
-    abstract fun getUsersDao(): LoginDataSource
+    abstract fun getUsersDao(): UsersWaysDao
 
-    abstract fun getWaysDao(): WaysDao
 
     companion object {
         @Volatile
@@ -73,19 +72,34 @@ abstract class UsersRoomDatabase : RoomDatabase() {
          * Populate the database in a new coroutine.
          * If you want to start with more words, just add them.
          */
-        suspend fun populateDatabase(thisDao: LoginDataSource) {
+        suspend fun populateDatabase(thisWaysDao: UsersWaysDao) {
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
-            thisDao.deleteAll()
+            thisWaysDao.deleteAll()
             val NewLoggedInUser1 = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
             val NewLoggedInUser2 = LoggedInUser("Djosh","Onetwo","qqqqqq", "b@b.c")
             val NewLoggedInUser3 = LoggedInUser("Kerdan","Onethree","qqqqqq", "c@b.c")
             val NewLoggedInUser4 = LoggedInUser("Okes","Onefour","qqqqqq", "d@b.c")
 
-            thisDao.insert(NewLoggedInUser1)
-            thisDao.insert(NewLoggedInUser2)
-            thisDao.insert(NewLoggedInUser3)
-            thisDao.insert(NewLoggedInUser4)
+            thisWaysDao.insert(NewLoggedInUser1)
+            thisWaysDao.insert(NewLoggedInUser2)
+            thisWaysDao.insert(NewLoggedInUser3)
+            thisWaysDao.insert(NewLoggedInUser4)
+
+            val way1 = UserWays(1,"Alex",242)
+            val way2 = UserWays(2,"Alex",321)
+            val way3 = UserWays(3,"Alex",542)
+            val way4 = UserWays(4,"Alex",341)
+            thisWaysDao.insertWay(way1)
+            thisWaysDao.insertWay(way2)
+            thisWaysDao.insertWay(way3)
+            thisWaysDao.insertWay(way4)
+
+
+            val fix1 = Ways(1,12f,2.0,4.0,12312312,12f,"GPS",0)
+            val fix2 = Ways(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
+            thisWaysDao.insertFix(fix1)
+            thisWaysDao.insertFix(fix2)
 
 
         }
