@@ -1,4 +1,4 @@
-package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments
+package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage
 
 
 import android.os.Bundle

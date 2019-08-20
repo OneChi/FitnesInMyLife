@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -20,7 +19,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import ru.vanchikov.fitnesinmylife.R
-import ru.vanchikov.fitnesinmylife.data.DataViewModel
+import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 
@@ -30,14 +29,15 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private lateinit var userInfo : LoggedInUser
     private lateinit var nav_header_login : TextView
     private lateinit var nav_header_email : TextView
-
+    private lateinit var navigationViewModel : NavigationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
-
-
-
+        userInfo = UserAccount.user
+        val navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
+        navigationViewModel.userAccount = userInfo
+            //  Toast.makeText(this,viewModelData?.user?.displayName,Toast.LENGTH_LONG).show()
 
         initMenu()
 

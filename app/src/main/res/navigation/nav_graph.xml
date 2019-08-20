@@ -4,12 +4,12 @@
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
             app:startDestination="@id/userPage">
 
-    <fragment android:id="@+id/userPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.UserPage"
+    <fragment android:id="@+id/userPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.UserPage.UserPage"
               android:label="Home" tools:layout="@layout/fragment_user_page"/>
     <fragment android:id="@+id/mapPage"
               class="com.google.android.gms.maps.MapFragment"
-              android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage"
+              android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage.MapPage"
               android:label="Map" tools:layout="@layout/fragment_map_page"/>
-    <fragment android:id="@+id/storyPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage"
+    <fragment android:id="@+id/storyPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.StoryPage"
               android:label="Ways" tools:layout="@layout/fragment_story_page"/>
 </navigation>

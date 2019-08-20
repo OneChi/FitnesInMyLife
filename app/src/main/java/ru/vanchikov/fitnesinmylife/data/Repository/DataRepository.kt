@@ -1,10 +1,13 @@
-package ru.vanchikov.fitnesinmylife.data
+package ru.vanchikov.fitnesinmylife.data.Repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.room.Query
+import ru.vanchikov.fitnesinmylife.data.model.Result
+import ru.vanchikov.fitnesinmylife.data.DAO.UsersWaysDao
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
-import ru.vanchikov.fitnesinmylife.data.model.Ways
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 import java.io.IOException
 
 /**
@@ -93,19 +96,19 @@ class DataRepository(val dataSource: UsersWaysDao) {
     {
         return dataSource.deleteAll()
     }
-    fun allUserWaysByUserId(userId: String): LiveData<List<UserWays>>
+    fun allUserWaysByUserId(userId: String): List<UserWays>
     {
         return dataSource.allUserWaysByUserId(userId)
     }
-    fun allWayFixByWayId(wayId: Int) : LiveData<List<Ways>>
+    fun allWayFixByWayId(wayId: Int) : List<WayFix>
     {
-        return dataSource.selectAllWayFixByWayId(wayId)
+        return dataSource.allWayFixByWayId(wayId)
     }
-    suspend fun insertWayFix(fix : Ways)
+    suspend fun insertWayFix(fix : WayFix)
     {
         dataSource.insertFix(fix)
     }
-    suspend fun deleteFix(fix: Ways) : Int
+    suspend fun deleteFix(fix: WayFix) : Int
     {
         return dataSource.deleteFix(fix)
     }
@@ -114,7 +117,7 @@ class DataRepository(val dataSource: UsersWaysDao) {
         return dataSource.deleteByFixId(fixId)
     }
 
-    fun getAllFixes() : LiveData<List<Ways>>
+    fun getAllFixes() : LiveData<List<WayFix>>
     {
         return dataSource.getAllFixes()
     }
@@ -131,9 +134,15 @@ class DataRepository(val dataSource: UsersWaysDao) {
         return dataSource.getAllWays()
     }
 
+
+    fun getWayById(wayId: Long) : UserWays{
+        return dataSource.getWayById(wayId)
+    }
+
+
     /*
-    suspend  insertWayFix(fix : Ways)
-    suspend  deleteFix(fix: Ways) : Int
+    suspend  insertWayFix(fix : WayFix)
+    suspend  deleteFix(fix: WayFix) : Int
     suspend  insertWay(way: UserWays)
     suspend  getUserTokenByLP(userlogin : String, userpassword : String) : LoggedInUser
     suspend  insertUser(user: LoggedInUser)
@@ -145,11 +154,11 @@ class DataRepository(val dataSource: UsersWaysDao) {
 
     allUserWaysByUserId(userId: String): LiveData<Array<UserWays>>
 
-    allWayFixByWayId(wayId: Int) : LiveData<Array<Ways>>
+    allWayFixByWayId(wayId: Int) : LiveData<Array<WayFix>>
 
     deleteFixByFixId(fixId : Double) : Int
 
-    getAllFixes() : LiveData<List<Ways>>
+    getAllFixes() : LiveData<List<WayFix>>
 
     deleteWayById(wayId : Int) : Int
 

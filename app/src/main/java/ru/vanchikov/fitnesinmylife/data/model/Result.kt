@@ -1,4 +1,4 @@
-package ru.vanchikov.fitnesinmylife.data
+package ru.vanchikov.fitnesinmylife.data.model
 
 /**
  * A generic class that holds a value with its loading status.

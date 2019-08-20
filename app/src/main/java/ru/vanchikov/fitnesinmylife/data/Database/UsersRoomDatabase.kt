@@ -1,4 +1,4 @@
-package ru.vanchikov.fitnesinmylife.data
+package ru.vanchikov.fitnesinmylife.data.Database
 
 import android.content.Context
 import androidx.room.Database
@@ -7,16 +7,17 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import ru.vanchikov.fitnesinmylife.data.DAO.UsersWaysDao
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
-import ru.vanchikov.fitnesinmylife.data.model.Ways
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 
 
 /**
  * This is the backend. The database. This used to be done by the OpenHelper.
  * The fact that this has very few comments emphasizes its coolness.
  */
-@Database(entities = [LoggedInUser::class,UserWays::class,Ways::class], version = 1)
+@Database(entities = [LoggedInUser::class,UserWays::class,WayFix::class], version = 2)
 abstract class UsersRoomDatabase : RoomDatabase() {
 
     abstract fun getUsersDao(): UsersWaysDao
@@ -41,7 +42,11 @@ abstract class UsersRoomDatabase : RoomDatabase() {
                     // Wipes and rebuilds instead of migrating if no Migration object.
                     // Migration is not part of this codelab.
                     .fallbackToDestructiveMigration()
-                    .addCallback(UsersRoomDatabaseCallback(scope))
+                    .addCallback(
+                        UsersRoomDatabaseCallback(
+                            scope
+                        )
+                    )
                     .build()
                 INSTANCE = instance
                 // return instance
@@ -96,8 +101,8 @@ abstract class UsersRoomDatabase : RoomDatabase() {
             thisWaysDao.insertWay(way4)
 
 
-            val fix1 = Ways(1,12f,2.0,4.0,12312312,12f,"GPS",0)
-            val fix2 = Ways(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
+            val fix1 = WayFix(1,12f,2.0,4.0,12312312,12f,"GPS",0)
+            val fix2 = WayFix(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
             thisWaysDao.insertFix(fix1)
             thisWaysDao.insertFix(fix2)
 

@@ -11,11 +11,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import ru.vanchikov.fitnesinmylife.data.UsersWaysDao
-import ru.vanchikov.fitnesinmylife.data.UsersRoomDatabase
+import ru.vanchikov.fitnesinmylife.data.DAO.UsersWaysDao
+import ru.vanchikov.fitnesinmylife.data.Database.UsersRoomDatabase
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
-import ru.vanchikov.fitnesinmylife.data.model.Ways
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 import java.io.IOException
 
 
@@ -119,8 +119,8 @@ class WordDaoTest {
         wordWaysDao.insertWay(way3)
         wordWaysDao.insertWay(way4)
 
-        val fix1 = Ways(1,12f,2.0,4.0,12312312,12f,"GPS",0)
-        val fix2 = Ways(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
+        val fix1 = WayFix(1,12f,2.0,4.0,12312312,12f,"GPS",0)
+        val fix2 = WayFix(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
         wordWaysDao.insertFix(fix1)
         wordWaysDao.insertFix(fix2)
 
@@ -151,8 +151,8 @@ class WordDaoTest {
         //Assert.assertTrue(allWords.isEmpty())
     }
     /*
-    suspend  insertWayFix(fix : Ways)
-    suspend  deleteFix(fix: Ways) : Int
+    suspend  insertWayFix(fix : WayFix)
+    suspend  deleteFix(fix: WayFix) : Int
     suspend  insertWay(way: UserWays)
     suspend  getUserTokenByLP(userlogin : String, userpassword : String) : LoggedInUser
     suspend  insertUser(user: LoggedInUser)
@@ -164,11 +164,11 @@ class WordDaoTest {
 
     allUserWaysByUserId(userId: String): LiveData<Array<UserWays>>
 
-    allWayFixByWayId(wayId: Int) : LiveData<Array<Ways>>
+    allWayFixByWayId(wayId: Int) : LiveData<Array<WayFix>>
 
     deleteFixByFixId(fixId : Double) : Int
 
-    getAllFixes() : LiveData<List<Ways>>
+    getAllFixes() : LiveData<List<WayFix>>
 
     deleteWayById(wayId : Int) : Int
 

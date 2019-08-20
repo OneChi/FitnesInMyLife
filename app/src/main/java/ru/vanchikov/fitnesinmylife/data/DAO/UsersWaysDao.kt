@@ -1,10 +1,10 @@
-package ru.vanchikov.fitnesinmylife.data
+package ru.vanchikov.fitnesinmylife.data.DAO
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
-import ru.vanchikov.fitnesinmylife.data.model.Ways
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
@@ -28,22 +28,25 @@ interface UsersWaysDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM users_ways_table where userId = :userId")
-    fun allUserWaysByUserId(userId : String) : LiveData<List<UserWays>>
+    fun allUserWaysByUserId(userId : String) : List<UserWays>
 
-    @Query("SELECT * FROM ways_table where wayId = :wayId")
-    fun selectAllWayFixByWayId(wayId: Int) : LiveData<List<Ways>>
+    @Query("SELECT * FROM wayfix_table where wayId = :wayId")
+    fun allWayFixByWayId(wayId: Int) : List<WayFix>
+
+    @Query("SELECT * FROM users_ways_table where wayId = :wayId")
+    fun getWayById(wayId: Long) : UserWays
 
     @Insert
-    suspend fun insertFix(fix : Ways)
+    suspend fun insertFix(fix : WayFix)
 
     @Delete
-    suspend fun deleteFix(fix : Ways) : Int
+    suspend fun deleteFix(fix : WayFix) : Int
 
-    @Query("DELETE FROM ways_table WHERE fixId = :fixId")
+    @Query("DELETE FROM wayfix_table WHERE fixId = :fixId")
     fun deleteByFixId(fixId : Double) : Int
 
-    @Query("SELECT * from ways_table ORDER BY fixId ASC")
-    fun getAllFixes(): LiveData<List<Ways>>
+    @Query("SELECT * from wayfix_table ORDER BY fixId ASC")
+    fun getAllFixes(): LiveData<List<WayFix>>
 
     @Insert
     suspend fun insertWay(way: UserWays)
