@@ -47,11 +47,11 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
     {
         return dataRepository.deleteAllUsers()
     }
-    fun allUserWaysByUserId(userId: String): List<UserWays>
+    fun allUserWaysByUserId(userId: String): LiveData<List<UserWays>>
     {
         return dataRepository.allUserWaysByUserId(userId)
     }
-    fun allWayFixByWayId(wayId: Int) : List<WayFix>
+    fun allWayFixByWayId(wayId: Int) : LiveData<List<WayFix>>
     {
         return dataRepository.allWayFixByWayId(wayId)
     }

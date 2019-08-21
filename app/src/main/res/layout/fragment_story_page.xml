@@ -6,9 +6,13 @@
                                                      android:layout_height="match_parent"
                                                      tools:context=".ui.Navigation.fragments.StoryPage.StoryPage"
                                                      android:orientation="vertical">
-    <ExpandableListView
+
+    <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:id="@+id/lvWays"/>
+            android:layout_height="match_parent"
+            android:id="@+id/lvWays"
+            tools:listitem="@layout/way_list_item"
+            />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addFbWay"
             android:layout_width="wrap_content"

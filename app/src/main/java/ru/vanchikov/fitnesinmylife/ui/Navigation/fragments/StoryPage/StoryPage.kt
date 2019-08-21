@@ -1,16 +1,22 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage
 
 
+import android.content.res.ObbInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import android.widget.LinearLayout
 import android.widget.SimpleExpandableListAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 
 //import javax.swing.UIManager.put
@@ -28,22 +34,76 @@ class StoryPage : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(ru.vanchikov.fitnesinmylife.R.layout.fragment_story_page, container, false)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val floatButton = view.findViewById<FloatingActionButton>(R.id.addFbWay)
+        floatButton.setOnClickListener(this)
         val navigationViewModel = activity?.let { ViewModelProviders.of(it).get(NavigationViewModel::class.java)}
 
+        val recyclerView : RecyclerView = view.findViewById(R.id.lvWays)
+        recyclerView.layoutManager = LinearLayoutManager(this.context)
+        recyclerView.setHasFixedSize(true)
 
-        // TODO: DELETE AFTER TEST'S
-        names = arrayOf("дом", "работа", "отдых", "магазин", "красота", "здоровье")
-        position = arrayOf(223,535,656,433,974,232)
-        // названия компаний (групп)
-        val groups = arrayOf("HTC", "Samsung", "LG")
+        val waysAdapter = UserWaysAdapter()
+        recyclerView.adapter = waysAdapter
 
+        navigationViewModel?.allUserWaysByUserId("Alex")?.observe(this, Observer { waysAdapter.setNotes(it) })
+
+
+
+
+
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id){
+            ru.vanchikov.fitnesinmylife.R.id.addFbWay -> {
+                Snackbar.make(v, "Floating button Add", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+            }
+            else -> {
+
+            }
+        }
+    }
+
+
+}
+
+
+/*
+// создаем адаптер
+val adapter = ArrayAdapter<String>(view.context, android.R.layout.simple_list_item_1, names)
+
+// присваиваем адаптер списку
+lvMain.setAdapter(adapter)
+
+lvMain.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+    Log.d(LOG_TAG, "itemClick: position = $position, id = $id")
+}
+
+lvMain.onItemSelectedListener = object : OnItemSelectedListener {
+    override fun onItemSelected(
+        parent: AdapterView<*>, view: View,
+        position: Int, id: Long
+    ) {
+        Log.d(LOG_TAG, "itemSelect: position = $position, id = $id")
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>) {
+        Log.d(LOG_TAG, "itemSelect: nothing")
+    }
+}
+*/
+
+
+
+/*
         // названия телефонов (элементов)
         val phonesHTC = arrayOf("Sensation", "Desire", "Wildfire", "Hero")
         val phonesSams = arrayOf("Galaxy S II", "Galaxy Nexus", "Wave")
@@ -150,46 +210,4 @@ class StoryPage : Fragment(), View.OnClickListener {
 
 
         lvMain.setAdapter(adapter)
-
-    }
-
-    override fun onClick(v: View?) {
-        when (v?.id){
-            ru.vanchikov.fitnesinmylife.R.id.addFbWay -> {
-                Snackbar.make(v, "Floating button Add", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-            }
-            else -> {
-
-            }
-        }
-    }
-
-
-}
-
-
-/*
-// создаем адаптер
-val adapter = ArrayAdapter<String>(view.context, android.R.layout.simple_list_item_1, names)
-
-// присваиваем адаптер списку
-lvMain.setAdapter(adapter)
-
-lvMain.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-    Log.d(LOG_TAG, "itemClick: position = $position, id = $id")
-}
-
-lvMain.onItemSelectedListener = object : OnItemSelectedListener {
-    override fun onItemSelected(
-        parent: AdapterView<*>, view: View,
-        position: Int, id: Long
-    ) {
-        Log.d(LOG_TAG, "itemSelect: position = $position, id = $id")
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>) {
-        Log.d(LOG_TAG, "itemSelect: nothing")
-    }
-}
 */

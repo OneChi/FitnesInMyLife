@@ -1,6 +1,5 @@
 package ru.vanchikov.fitnesinmylife.data.model
 
-import android.provider.ContactsContract
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -14,4 +13,5 @@ data class LoggedInUser(
     val displayName: String,
     val password : String,
     val email: String
+
 )

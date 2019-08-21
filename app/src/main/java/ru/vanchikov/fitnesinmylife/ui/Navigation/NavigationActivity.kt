@@ -1,5 +1,6 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +23,8 @@ import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
+import ru.vanchikov.fitnesinmylife.ui.login.LoginActivity
+import kotlin.system.exitProcess
 
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

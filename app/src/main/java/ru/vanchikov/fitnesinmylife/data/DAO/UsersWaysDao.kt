@@ -28,10 +28,10 @@ interface UsersWaysDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM users_ways_table where userId = :userId")
-    fun allUserWaysByUserId(userId : String) : List<UserWays>
+    fun allUserWaysByUserId(userId : String) : LiveData<List<UserWays>>
 
     @Query("SELECT * FROM wayfix_table where wayId = :wayId")
-    fun allWayFixByWayId(wayId: Int) : List<WayFix>
+    fun allWayFixByWayId(wayId: Int) : LiveData<List<WayFix>>
 
     @Query("SELECT * FROM users_ways_table where wayId = :wayId")
     fun getWayById(wayId: Long) : UserWays

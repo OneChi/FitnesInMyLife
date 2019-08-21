@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
         // TODO: DELETE AFTER TESTING
         username.setText("a@b.c")
-        password.setText("")
+        password.setText("qqqqqq")
 
 
         loginViewModel = ViewModelProviders.of(this)
@@ -110,6 +110,8 @@ class LoginActivity : AppCompatActivity() {
                 loading.visibility = View.VISIBLE
                 loginViewModel.getLogin(username.text.toString(), password.text.toString()) //login(username.text.toString(), password.text.toString())
             }
+            //TODO : DELETE THIS
+            loginViewModel.getLogin(username.text.toString(), password.text.toString())
         }
     }
 

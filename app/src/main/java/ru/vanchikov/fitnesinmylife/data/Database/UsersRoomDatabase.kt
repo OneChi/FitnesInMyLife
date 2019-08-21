@@ -37,10 +37,9 @@ abstract class UsersRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     UsersRoomDatabase::class.java,
-                    "word_database"
+                    "app_database"
                 )
                     // Wipes and rebuilds instead of migrating if no Migration object.
-                    // Migration is not part of this codelab.
                     .fallbackToDestructiveMigration()
                     .addCallback(
                         UsersRoomDatabaseCallback(
@@ -59,7 +58,6 @@ abstract class UsersRoomDatabase : RoomDatabase() {
         ) : RoomDatabase.Callback() {
             /**
              * Override the onOpen method to populate the database.
-             * For this sample, we clear the database every time it is created or opened.
              */
             override fun onOpen(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
@@ -91,10 +89,10 @@ abstract class UsersRoomDatabase : RoomDatabase() {
             thisWaysDao.insert(NewLoggedInUser3)
             thisWaysDao.insert(NewLoggedInUser4)
 
-            val way1 = UserWays(1,"Alex",242)
-            val way2 = UserWays(2,"Alex",321)
-            val way3 = UserWays(3,"Alex",542)
-            val way4 = UserWays(4,"Alex",341)
+            val way1 = UserWays(1,"Alex",242, "toHome",134134)
+            val way2 = UserWays(2,"Alex",321, "toWork",21414)
+            val way3 = UserWays(3,"Alex",542, "toSchool",43143)
+            val way4 = UserWays(4,"Alex",341,"toShop",31513)
             thisWaysDao.insertWay(way1)
             thisWaysDao.insertWay(way2)
             thisWaysDao.insertWay(way3)

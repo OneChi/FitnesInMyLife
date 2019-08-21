@@ -96,11 +96,11 @@ class DataRepository(val dataSource: UsersWaysDao) {
     {
         return dataSource.deleteAll()
     }
-    fun allUserWaysByUserId(userId: String): List<UserWays>
+    fun allUserWaysByUserId(userId: String): LiveData<List<UserWays>>
     {
         return dataSource.allUserWaysByUserId(userId)
     }
-    fun allWayFixByWayId(wayId: Int) : List<WayFix>
+    fun allWayFixByWayId(wayId: Int) : LiveData<List<WayFix>>
     {
         return dataSource.allWayFixByWayId(wayId)
     }

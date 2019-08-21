@@ -1,11 +1,13 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.UserPage
 
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.viewModelScope
@@ -14,6 +16,7 @@ import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.LoginViewModel
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import ru.vanchikov.fitnesinmylife.ui.login.LoginActivity
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,7 +28,7 @@ private const val ARG_PARAM2 = "param2"
  * A simple [Fragment] subclass.
  *
  */
-class UserPage : Fragment() {
+class UserPage : Fragment(), View.OnClickListener {
 
     var loginViewModel : LoginViewModel? = null
 
@@ -44,6 +47,8 @@ class UserPage : Fragment() {
 
         //val loginViewModel = activity?.let { ViewModelProviders.of(it).get(LoginViewModel::class.java)}
 
+        val extBtn = view.findViewById<Button>(R.id.changeUserBtn)
+        extBtn.setOnClickListener(this)
 
 
         val username = view.findViewById<TextView>(R.id.userpagename)
@@ -68,5 +73,16 @@ class UserPage : Fragment() {
             userlogin.text = it.email
         })
 */
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.changeUserBtn ->{
+                onStop()
+                val intent = Intent(activity, LoginActivity::class.java)
+                startActivity(intent)
+                activity?.finish()
+            }
+        }
     }
 }
