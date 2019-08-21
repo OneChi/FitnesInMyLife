@@ -1,14 +1,10 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage
 
 
-import android.content.res.ObbInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
-import android.widget.LinearLayout
-import android.widget.SimpleExpandableListAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -35,7 +31,7 @@ class StoryPage : Fragment(), View.OnClickListener {
     ): View? {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(ru.vanchikov.fitnesinmylife.R.layout.fragment_story_page, container, false)
+        return inflater.inflate(R.layout.fragment_story_page, container, false)
     }
 
 
@@ -49,10 +45,10 @@ class StoryPage : Fragment(), View.OnClickListener {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
 
-        val waysAdapter = UserWaysAdapter()
+        val waysAdapter = UserWaysAdapter(activity!!)
         recyclerView.adapter = waysAdapter
 
-        navigationViewModel?.allUserWaysByUserId("Alex")?.observe(this, Observer { waysAdapter.setNotes(it) })
+        navigationViewModel?.allUserWaysByUserId(navigationViewModel?.userAccount!!.userId)?.observe(this, Observer { waysAdapter.setNotes(it) })
 
 
 

@@ -14,6 +14,10 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
 
     private var dataRepository : DataRepository
 
+    var currentWayOnMap : UserWays? = null
+
+
+
     var userAccount : LoggedInUser? = null
 
 

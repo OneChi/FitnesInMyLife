@@ -1,6 +1,5 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -20,11 +19,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import ru.vanchikov.fitnesinmylife.R
-import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.UserAccount
+import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
-import ru.vanchikov.fitnesinmylife.ui.login.LoginActivity
-import kotlin.system.exitProcess
 
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -40,7 +37,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         userInfo = UserAccount.user
         val navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
         navigationViewModel.userAccount = userInfo
-            //  Toast.makeText(this,viewModelData?.user?.displayName,Toast.LENGTH_LONG).show()
+        //  Toast.makeText(this,viewModelData?.user?.displayName,Toast.LENGTH_LONG).show()
 
         initMenu()
 
@@ -86,7 +83,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     override fun onBackPressed() {
-        val drawerLayout: DrawerLayout = findViewById(ru.vanchikov.fitnesinmylife.R.id.drawer_layout)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
@@ -96,10 +93,10 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(ru.vanchikov.fitnesinmylife.R.menu.navigation, menu)
+        menuInflater.inflate(R.menu.navigation, menu)
 
-        nav_header_login = findViewById<TextView>(ru.vanchikov.fitnesinmylife.R.id.nav_header_login)
-        nav_header_email = findViewById<TextView>(ru.vanchikov.fitnesinmylife.R.id.nav_header_email)
+        nav_header_login = findViewById(R.id.nav_header_login)
+        nav_header_email = findViewById(R.id.nav_header_email)
 
         nav_header_login.text = UserAccount.user.displayName
         nav_header_email.text = UserAccount.user.email
@@ -114,7 +111,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val navController = findNavController(R.id.nav_host_fragment)
         //NavigationUI.onNavDestinationSelected(item, navController)
         return when (item.itemId) {
-            ru.vanchikov.fitnesinmylife.R.id.action_settings -> true
+            R.id.action_settings -> true
 
             else ->item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
         }
@@ -123,23 +120,23 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            ru.vanchikov.fitnesinmylife.R.id.userPage -> {
+            R.id.userPage -> {
                 //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.userPage)
             }
-            ru.vanchikov.fitnesinmylife.R.id.storyPage -> {
+            R.id.storyPage -> {
                 //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.mapPage)
             }
-            ru.vanchikov.fitnesinmylife.R.id.mapPage -> {
+            R.id.mapPage -> {
                 //Navigation.findNavController(this,R.id.nav_host_fragment).navigate(R.id.mapPage)
             }
-            ru.vanchikov.fitnesinmylife.R.id.nav_share -> {
+            R.id.nav_share -> {
 
             }
-            ru.vanchikov.fitnesinmylife.R.id.nav_send -> {
+            R.id.nav_send -> {
 
             }
         }
-        val drawerLayout: DrawerLayout = findViewById(ru.vanchikov.fitnesinmylife.R.id.drawer_layout)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
