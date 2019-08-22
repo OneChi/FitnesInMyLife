@@ -2,18 +2,22 @@ package ru.vanchikov.fitnesinmylife.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.*
-
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import ru.vanchikov.fitnesinmylife.R
+import ru.vanchikov.fitnesinmylife.data.ViewModels.LoginViewModel
+import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.ui.Navigation.NavigationActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -32,7 +36,12 @@ class LoginActivity : AppCompatActivity() {
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
+        // TODO: DELETE AFTER TESTING
+        username.setText("a@b.c")
+        password.setText("qqqqqq")
+
+
+        loginViewModel = ViewModelProviders.of(this)
             .get(LoginViewModel::class.java)
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
@@ -61,6 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 updateUiWithUser(loginResult.success)
                 //Complete and destroy login activity once successful
                 val intent: Intent = Intent(this, NavigationActivity::class.java)
+                UserAccount.user = loginResult.success.user
                 startActivity(intent)
                 finish()
             }
@@ -88,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
+                        loginViewModel.getLogin(
                             username.text.toString(),
                             password.text.toString()
                         )
@@ -98,14 +108,16 @@ class LoginActivity : AppCompatActivity() {
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+                loginViewModel.getLogin(username.text.toString(), password.text.toString()) //login(username.text.toString(), password.text.toString())
             }
+            //TODO : DELETE THIS
+            loginViewModel.getLogin(username.text.toString(), password.text.toString())
         }
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName + "!"
+        val displayName = model.user.displayName + "!"
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,
@@ -117,6 +129,7 @@ class LoginActivity : AppCompatActivity() {
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
+
 }
 
 /**
@@ -133,3 +146,4 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     })
 }
+

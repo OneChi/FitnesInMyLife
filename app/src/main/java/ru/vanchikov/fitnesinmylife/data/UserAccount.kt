@@ -4,8 +4,10 @@ import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 
 
  class UserAccount {
-    companion object {
+     companion object {
        lateinit var user : LoggedInUser
 
     }
 }
+
+
