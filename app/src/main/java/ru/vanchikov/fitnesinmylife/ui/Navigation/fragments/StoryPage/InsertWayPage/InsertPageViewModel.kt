@@ -1,4 +1,4 @@
-package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage
+package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.InsertWayPage
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -12,13 +12,11 @@ import ru.vanchikov.fitnesinmylife.data.model.UserWays
 /**
  * Created on 22.08.2019
  */
-class StoryPageViewModel(application: Application) : AndroidViewModel(application) {
+class InsertPageViewModel(application: Application) : AndroidViewModel(application) {
 
 
     private var dataRepository : DataRepository
 
-
-    // TODO: Здесь нужно сдулать получение (инициализацию) этого объекта, т.к. он используется !
     var userAccount : LoggedInUser? = null
 
     init {

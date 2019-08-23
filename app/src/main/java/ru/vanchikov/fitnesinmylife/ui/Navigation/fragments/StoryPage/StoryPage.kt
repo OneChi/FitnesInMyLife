@@ -15,7 +15,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
-import ru.vanchikov.fitnesinmylife.util.makeToastLong
+import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.InsertWayPage.InsertPageViewModel
 
 //import javax.swing.UIManager.put
 
@@ -31,7 +32,7 @@ class StoryPage : Fragment(), View.OnClickListener {
     private lateinit var position: Array<Int>
 
     // Думаю лучше делать свой ViewModel для каждого окна (в данном случае fragment)
-    lateinit var storyPageViewModel: StoryPageViewModel
+    lateinit var insertPageViewModel: InsertPageViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,27 +48,25 @@ class StoryPage : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         val floatButton = view.findViewById<FloatingActionButton>(R.id.addFbWay)
         floatButton.setOnClickListener(this)
+
         val navigationViewModel =
             activity?.let { ViewModelProviders.of(it).get(NavigationViewModel::class.java) }
 
-        storyPageViewModel = ViewModelProviders.of(this).get(StoryPageViewModel::class.java)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.lvWays)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
 
-        // Когда создаём адаптер, передаём ему то, что будет раелизовывать наш интерфейс OnUserClickListener
-        // тут можно сделать напрямую, как написано ниже, через object : UserWaysAdapter.OnUserClickListener {}
-        // ИЛИ можно реализовать этот интерфейс во фрагменте или во ViewModel или в других места, где будет удобнее и лучше
+ 
         val waysAdapter = UserWaysAdapter(activity!!, object : UserWaysAdapter.OnUserClickListener {
-            override fun onClickUserWay(id: String) {
-                // здесь уже можно реализовать логику обрабокти нажатия на элемент списка
-                onClickWay(id)
+            override fun onClickUserWay(way: UserWays) {
+
+                              onClickWay(way)
             }
         })
         recyclerView.adapter = waysAdapter
 
-        //TODO: заменить на свой viewModel - storyPageViewModel !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! :)
+
         navigationViewModel?.allUserWaysByUserId(navigationViewModel?.userAccount!!.userId)
             ?.observe(this, Observer { waysAdapter.setNotes(it) })
 
@@ -76,9 +75,12 @@ class StoryPage : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            ru.vanchikov.fitnesinmylife.R.id.addFbWay -> {
+            R.id.addFbWay -> {
                 Snackbar.make(v, "Floating button Add", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
+
+                //action_storyPage_to_insertWayPage
+
             }
             else -> {
 
@@ -87,10 +89,10 @@ class StoryPage : Fragment(), View.OnClickListener {
     }
 
 
-    private fun onClickWay(id: String){
+    private fun onClickWay(way: UserWays){
         // в итоге у нас есть id элемента по которому был клик.
         // можно передавать не только id. тут всё зависит от потребностей.
-        makeToastLong(id)
+        //makeToastLong(user.displayName)
 
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.mapPage)
     }

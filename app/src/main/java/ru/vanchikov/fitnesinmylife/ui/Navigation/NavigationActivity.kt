@@ -37,8 +37,6 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         userInfo = UserAccount.user
         val navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
         navigationViewModel.userAccount = userInfo
-        //  Toast.makeText(this,viewModelData?.user?.displayName,Toast.LENGTH_LONG).show()
-
         initMenu()
 
     }
@@ -54,15 +52,10 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val navController = host.navController
 
-        // обеспечивает поддержку логинап и почты в оглавлении бокового меню NavDrawer
+        // обеспечивает поддержку логина и почты в оглавлении бокового меню NavDrawer
         setSupportActionBar(toolbar)
 
-        /*
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }*/
+
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
