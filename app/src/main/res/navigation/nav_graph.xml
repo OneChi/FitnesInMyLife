@@ -8,18 +8,8 @@
               android:label="Home" tools:layout="@layout/fragment_user_page"/>
     <fragment android:id="@+id/mapPage"
               class="com.google.android.gms.maps.MapFragment"
-              android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage.MapPage"
+              android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage.MapFragment"
               android:label="Map" tools:layout="@layout/fragment_map_page"/>
     <fragment android:id="@+id/storyPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.StoryPage"
-              android:label="Ways" tools:layout="@layout/fragment_story_page">
-        <action
-                android:id="@+id/action_storyPage_to_insertWayPage"
-                app:destination="@id/insertWayPage"
-                app:popUpTo="@+id/storyPage" />
-    </fragment>
-    <fragment
-            android:id="@+id/insertWayPage"
-            android:name="ru.vanchikov.fitnesinmylife.InsertWayPage"
-            android:label="insert_way_page"
-            tools:layout="@layout/insert_way_page" />
+              android:label="Ways" tools:layout="@layout/fragment_story_page"/>
 </navigation>

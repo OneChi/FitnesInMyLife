@@ -17,6 +17,7 @@ import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
 import ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.InsertWayPage.InsertPageViewModel
+import ru.vanchikov.fitnesinmylife.util.makeToastLong
 
 //import javax.swing.UIManager.put
 
@@ -78,8 +79,7 @@ class StoryPage : Fragment(), View.OnClickListener {
             R.id.addFbWay -> {
                 Snackbar.make(v, "Floating button Add", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
-
-                //action_storyPage_to_insertWayPage
+                //
 
             }
             else -> {
@@ -92,9 +92,11 @@ class StoryPage : Fragment(), View.OnClickListener {
     private fun onClickWay(way: UserWays){
         // в итоге у нас есть id элемента по которому был клик.
         // можно передавать не только id. тут всё зависит от потребностей.
-        //makeToastLong(user.displayName)
 
-        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.mapPage)
+        makeToastLong("${way.wayId}")
+
+
+       // Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.mapPage)
     }
 
 }
@@ -123,114 +125,4 @@ lvMain.onItemSelectedListener = object : OnItemSelectedListener {
         Log.d(LOG_TAG, "itemSelect: nothing")
     }
 }
-*/
-
-
-/*
-        // названия телефонов (элементов)
-        val phonesHTC = arrayOf("Sensation", "Desire", "Wildfire", "Hero")
-        val phonesSams = arrayOf("Galaxy S II", "Galaxy Nexus", "Wave")
-        val phonesLG = arrayOf("Optimus", "Optimus Link", "Optimus Black", "Optimus One")
-
-        // коллекция для групп
-        val groupData: ArrayList<Map<String, String>>
-
-        // коллекция для элементов одной группы
-        var childDataItem: ArrayList<Map<String, String>>
-
-        // общая коллекция для коллекций элементов
-        val childData:   ArrayList<ArrayList<Map<String, String>>>
-        // в итоге получится childData = ArrayList<childDataItem>
-
-        // список атрибутов группы или элемента
-        var m: Map<String, String>
-
-
-        val fab: FloatingActionButton = view.findViewById(ru.vanchikov.fitnesinmylife.R.id.addFbWay)
-        fab.setOnClickListener (this)
-
-        // находим список
-        val lvMain = view.findViewById(ru.vanchikov.fitnesinmylife.R.id.lvWays) as ExpandableListView
-        //lvMain.setChoiceMode(ListView.FOCUSABLES_TOUCH_MODE)
-
-        // заполняем коллекцию групп из массива с названиями групп
-        groupData = ArrayList()
-        for (group in groups) {
-            // заполняем список атрибутов для каждой группы
-            m = HashMap()
-            m.put("groupName", group) // имя компании
-            groupData.add(m)
-        }
-
-        //val userWaysArrayLD = loginViewModel?.allUserWaysByUserId(UserAccount.user.userId)
-        //var userWaysArray : ArrayList<UserWays>
-       // userWaysArrayLD?.observe(this, Observer { ways -> userWaysArray = ways })
-
-
-
-        // список атрибутов групп для чтения
-        val groupFrom = arrayOf("groupName")
-        // список ID view-элементов, в которые будет помещены атрибуты групп
-        val groupTo = intArrayOf(android.R.id.text1)
-
-
-
-        // val allUserWays = loginViewModel?.loginRepository,
-        // создаем коллекцию для коллекций элементов
-        childData = ArrayList()
-
-        // создаем коллекцию элементов для первой группы
-        childDataItem = ArrayList()
-        // заполняем список атрибутов для каждого элемента
-        for (phone in phonesHTC) {
-            m = HashMap()
-            m.put("phoneName", phone) // название телефона
-            childDataItem.add(m)
-        }
-
-
-        // добавляем в коллекцию коллекций
-        childData.add(childDataItem)
-
-        // создаем коллекцию элементов для второй группы
-        childDataItem = ArrayList()
-        for (phone in phonesSams) {
-            m = HashMap()
-            m.put("phoneName", phone)
-            childDataItem.add(m)
-        }
-        childData.add(childDataItem)
-
-        // создаем коллекцию элементов для третьей группы
-        childDataItem = ArrayList()
-        for (phone in phonesLG) {
-            m = HashMap()
-            m.put("phoneName", phone)
-            childDataItem.add(m)
-        }
-        childData.add(childDataItem)
-
-
-        //navigationViewModel.allUserWaysByUserId(navigationViewModel.userAccount.userId)
-
-
-        // список атрибутов элементов для чтения
-        val childFrom = arrayOf("phoneName")
-        // список ID view-элементов, в которые будет помещены атрибуты элементов
-        val childTo = intArrayOf(android.R.id.text1)
-
-        val adapter = SimpleExpandableListAdapter(
-            view.context,
-            groupData,
-            android.R.layout.simple_expandable_list_item_1,
-            groupFrom,
-            groupTo,
-            childData,
-            android.R.layout.simple_list_item_1,
-            childFrom,
-            childTo
-        )
-
-
-        lvMain.setAdapter(adapter)
 */

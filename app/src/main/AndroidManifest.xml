@@ -37,6 +37,16 @@
             </intent-filter>
         </activity>
 
+        <service
+                android:name=".Service.GpsServiceApp"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <action android:name=".GpsServiceApp"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
 
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"

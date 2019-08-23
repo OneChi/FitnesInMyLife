@@ -1,22 +1,16 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage
 
-import android.app.Activity
-import android.app.Application
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
-import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
 
 class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickListener) : RecyclerView.Adapter<UserWaysAdapter.UserWayHolder>() {
@@ -62,9 +56,9 @@ class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickL
 
     class UserWayHolder(itemView: View,activity: FragmentActivity) : RecyclerView.ViewHolder(itemView) {
 
-         val textViewName: TextView
-         val textViewInfo: TextView
-         val btnInspect : Button
+        val textViewName: TextView
+        val textViewInfo: TextView
+        val btnInspect : Button
 
         init {
             textViewName = itemView.findViewById(R.id.textViewName)

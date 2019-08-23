@@ -1,12 +1,22 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation
 
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
+import android.telecom.ConnectionService
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
@@ -19,6 +29,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import ru.vanchikov.fitnesinmylife.R
+import ru.vanchikov.fitnesinmylife.Service.GpsServiceApp
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
@@ -30,18 +41,68 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private lateinit var nav_header_login: TextView
     private lateinit var nav_header_email: TextView
     private lateinit var navigationViewModel: NavigationViewModel
+    private lateinit var navController: NavController
+    // SERVICE
+    var bound = false
+    lateinit var serviceIntent: Intent
+    lateinit var serviceConnection: ServiceConnection
+    private var LOG_TAG = "MyGpsApp"
+    private var interval : Long = 1000
+    private var myServiceBinder : GpsServiceApp.MyBinder? = null
+    var service: GpsServiceApp? = null
+
+    //PERMISSIONS
+    var MY_PERMISSIONS_REQUEST_ACC_FINE_LOC: Int = 1
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
+
         userInfo = UserAccount.user
         val navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
         navigationViewModel.userAccount = userInfo
+
+        initStartGPSService()
         initMenu()
+
 
     }
 
-    private lateinit var navController: NavController
+    private fun initStartGPSService(){
+        //INITIALIZE SERVICE GPS
+        serviceIntent = Intent(".GpsServiceApp")
+        serviceIntent.setPackage("ru.vanchikov.fitnesinmylife")
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName, binder: IBinder) {
+                Log.d(LOG_TAG, "MainActivity onServiceConnected")
+                service = (binder as GpsServiceApp.MyBinder).service
+                bound = true
+            }
+
+            override fun onServiceDisconnected(name: ComponentName) {
+                Log.d(LOG_TAG, "MainActivity onServiceDisconnected")
+                bound = false
+            }
+        }
+        //END OF GPS SERVICE INIT.
+        bindService(serviceIntent, serviceConnection, 0)
+
+            startService(serviceIntent)
+
+
+        /*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            }
+            else {
+        }*/
+        Log.w(LOG_TAG,"SERVICE_STARTED")
+        service?.task()
+
+    }
 
     private fun initMenu() {
 
@@ -139,6 +200,61 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
+    override fun onStart() {
+        super.onStart()
+        //startService(serviceIntent)
+        //service1 = GpsServiceApp().getInstance()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_ACC_FINE_LOC -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return
+            }
+
+            // Add other 'when' lines to check for other
+            // permissions this app might request.
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.READ_CONTACTS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    MY_PERMISSIONS_REQUEST_ACC_FINE_LOC)
+            }
+        } else {
+            // Permission has already been granted
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //stopService(serviceIntent)
+        if (!bound) return
+        Log.w(LOG_TAG,"SERVICE_STOPPED")
+        unbindService(serviceConnection)
+        bound = false
+    }
+
 }
 
 
