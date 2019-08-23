@@ -1,9 +1,10 @@
 package ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage
 
+//TODO : ПЕРЕДЕЛАТЬ ВСЕ НАХРЕН
+
 
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,11 +18,9 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_map_page.view.*
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.ui.Navigation.NavigationActivity
 import ru.vanchikov.fitnesinmylife.util.makeToastShort
-import java.lang.Exception
 
 class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, View.OnClickListener {
 
@@ -59,7 +58,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                 try {
                     if (ActivityCompat.checkSelfPermission(this.activity!!.baseContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         makeToastShort("не работает")
-                        return;
+                        return
                     }
                     var newLoc: Location = (activity as NavigationActivity).service?.getLocation()!!//locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
@@ -69,7 +68,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                     googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(me))
                 } catch (ex: Exception){
-                    Log.w(LOG_TAG, ex.localizedMessage)
+                    Log.w(LOG_TAG, ex.toString())
                 }
             }
             R.id.fb_addWayOnMap ->{

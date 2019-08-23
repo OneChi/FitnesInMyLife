@@ -1,5 +1,8 @@
 package ru.vanchikov.fitnesinmylife.Service
 
+//TODO : ПЕРЕДЕЛАТЬ ВСЕ НАХРЕН В СЕРВИСЕ
+
+
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
