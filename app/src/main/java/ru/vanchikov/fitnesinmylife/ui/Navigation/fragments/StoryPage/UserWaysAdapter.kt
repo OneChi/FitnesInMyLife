@@ -18,7 +18,7 @@ import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
 
-class UserWaysAdapter(val activity: FragmentActivity) : RecyclerView.Adapter<UserWaysAdapter.UserWayHolder>() {
+class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickListener) : RecyclerView.Adapter<UserWaysAdapter.UserWayHolder>() {
 
     private var ways: List<UserWays> = ArrayList()
     val navigationViewModel : NavigationViewModel =  ViewModelProviders.of(activity).get(NavigationViewModel::class.java)
@@ -38,6 +38,16 @@ class UserWaysAdapter(val activity: FragmentActivity) : RecyclerView.Adapter<Use
         navigationViewModel.currentWayOnMap = currWay
         holder.textViewName.text = currWay.wayName
         holder.textViewInfo.text = currWay.wayTime.toString()
+
+        // тут можно НАПРИМЕР положить какую-то инфу в tag вью и установить ClickListener
+        // в данном случае мы кладём инфу в tag кнопки btnInspect. Можно было бы положить в само вью
+        holder.btnInspect.tag = currWay
+        holder.btnInspect.setOnClickListener {
+            // достаём инфу из вью
+            val item = it.tag as? UserWays ?: return@setOnClickListener
+            // вызываем метод клика у интерфейса
+            listener.onClickUserWay(item.userId)
+        }
 
     }
 
@@ -60,7 +70,8 @@ class UserWaysAdapter(val activity: FragmentActivity) : RecyclerView.Adapter<Use
             textViewInfo = itemView.findViewById(R.id.textViewInfo)
             btnInspect   = itemView.findViewById(R.id.inspect_btn)
 
-            val navigationViewModel : NavigationViewModel =  ViewModelProviders.of(activity).get(NavigationViewModel::class.java)
+            // Переделаем это в использование интерфейса
+            /*val navigationViewModel : NavigationViewModel =  ViewModelProviders.of(activity).get(NavigationViewModel::class.java)
 
             btnInspect.setOnClickListener {
 
@@ -68,8 +79,14 @@ class UserWaysAdapter(val activity: FragmentActivity) : RecyclerView.Adapter<Use
             Log.w("LOG_RECYCLE","${ navigationViewModel.currentWayOnMap?.wayName} was cklicked by ${navigationViewModel.userAccount?.userId}")
             Navigation.findNavController(activity,R.id.nav_host_fragment).navigate(R.id.mapPage)
 
-            }
+            }*/
         }
 
+    }
+
+    //Можно создать интерфейс для обработки нажатий кнопок или других событий в адаптере
+    interface OnUserClickListener{
+        // например событие клика по итему вызовет этот метот и передаст в него id выбранного итема
+        fun onClickUserWay(id: String)
     }
 }

@@ -26,10 +26,10 @@ import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var userInfo : LoggedInUser
-    private lateinit var nav_header_login : TextView
-    private lateinit var nav_header_email : TextView
-    private lateinit var navigationViewModel : NavigationViewModel
+    private lateinit var userInfo: LoggedInUser
+    private lateinit var nav_header_login: TextView
+    private lateinit var nav_header_email: TextView
+    private lateinit var navigationViewModel: NavigationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +47,9 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun initMenu() {
 
-        val host = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
+        val host =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment?
+                ?: return
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val navController = host.navController
@@ -64,13 +66,17 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
-        val appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout = drawer_layout)
-
+        val appBarConfiguration =
+            AppBarConfiguration(navController.graph, drawerLayout = drawer_layout)
 
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_open, ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_close
+            this,
+            drawerLayout,
+            toolbar,
+            ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_open,
+            ru.vanchikov.fitnesinmylife.R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -78,7 +84,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         navView.setNavigationItemSelectedListener(this)
         navView?.setupWithNavController(navController)
 
-        toolbar.setupWithNavController(navController,appBarConfiguration)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
 
     }
 
@@ -113,7 +119,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         return when (item.itemId) {
             R.id.action_settings -> true
 
-            else ->item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+            else -> item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
         }
     }
 
