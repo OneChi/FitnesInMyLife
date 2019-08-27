@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,13 +21,10 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
-import kotlinx.coroutines.launch
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
-import ru.vanchikov.fitnesinmylife.data.model.UserWays
-import ru.vanchikov.fitnesinmylife.data.model.WayFix
 
 
 class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -50,11 +48,29 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
         navigationViewModel.userAccount = userInfo
         initMenu()
-        //initDataBase()
+
     }
 
+    fun initPermissions(){
 
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.READ_CONTACTS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    MY_PERMISSIONS_REQUEST_ACC_FINE_LOC)
+            }
+        } else {
+            // Permission has already been granted
+        }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        initPermissions()
+    }
 
     private fun initMenu() {
 
