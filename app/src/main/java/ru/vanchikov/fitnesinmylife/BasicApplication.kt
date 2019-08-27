@@ -11,9 +11,5 @@ class BasicApplication : Application() {
 
 
 
-    override fun onCreate() {
-        super.onCreate()
 
-
-    }
 }

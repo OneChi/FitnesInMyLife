@@ -12,8 +12,9 @@ import ru.vanchikov.fitnesinmylife.data.model.WayFix
 
 class NavigationViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var dataRepository : DataRepository
+   var dataRepository : DataRepository
 
+    var currentWayLoadState : Boolean = false
     var currentWayOnMap : UserWays? = null
 
 
@@ -55,7 +56,7 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
     {
         return dataRepository.allUserWaysByUserId(userId)
     }
-    fun allWayFixByWayId(wayId: Int) : LiveData<List<WayFix>>
+    fun allWayFixByWayId(wayId: Long) : LiveData<List<WayFix>>
     {
         return dataRepository.allWayFixByWayId(wayId)
     }

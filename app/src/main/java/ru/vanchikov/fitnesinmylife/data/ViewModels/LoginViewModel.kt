@@ -10,14 +10,17 @@ import kotlinx.coroutines.launch
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.Database.UsersRoomDatabase
 import ru.vanchikov.fitnesinmylife.data.Repository.DataRepository
+import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.Result
+import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 import ru.vanchikov.fitnesinmylife.ui.login.LoggedInUserView
 import ru.vanchikov.fitnesinmylife.ui.login.LoginFormState
 import ru.vanchikov.fitnesinmylife.ui.login.LoginResult
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var dataRepository : DataRepository
+    val dataRepository : DataRepository
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -34,6 +37,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope
         ).getUsersDao()
         dataRepository = DataRepository(loginDao)
+
+
+
+
+
+
     }
 
 

@@ -100,7 +100,7 @@ class DataRepository(val dataSource: UsersWaysDao) {
     {
         return dataSource.allUserWaysByUserId(userId)
     }
-    fun allWayFixByWayId(wayId: Int) : LiveData<List<WayFix>>
+    fun allWayFixByWayId(wayId: Long) : LiveData<List<WayFix>>
     {
         return dataSource.allWayFixByWayId(wayId)
     }

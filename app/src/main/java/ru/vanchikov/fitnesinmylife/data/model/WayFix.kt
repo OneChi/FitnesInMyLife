@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
 )])
 data class WayFix (
     val wayId : Long,
-    val altitude : Float,
+    val altitude : Double,
     val latitude : Double,
     val longtitude : Double,
     val time : Long,

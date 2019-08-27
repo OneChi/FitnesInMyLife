@@ -109,45 +109,40 @@ class WordDaoTest {
         wordWaysDao.insert(NewLoggedInUser3)
         wordWaysDao.insert(NewLoggedInUser4)
 
-        val way1 = UserWays(1,"Alex",242)
-        val way2 = UserWays(2,"Alex",321)
-        val way3 = UserWays(3,"Alex",542)
-        val way4 = UserWays(4,"Alex",341)
+
+        val way1 = UserWays(1,"Alex",242, "toHome",134134)
+        val way2 = UserWays(2,"Alex",321, "toWork",21414)
+        val way3 = UserWays(3,"Alex",542, "toSchool",43143)
+        val way4 = UserWays(4,"Alex",341,"toShop",31513)
 
         wordWaysDao.insertWay(way1)
         wordWaysDao.insertWay(way2)
         wordWaysDao.insertWay(way3)
         wordWaysDao.insertWay(way4)
 
-        val fix1 = WayFix(1,12f,2.0,4.0,12312312,12f,"GPS",0)
-        val fix2 = WayFix(1,4f,3.0,6.0,22312312,142f,"NETWORK",0)
+        val fix1 = WayFix(1,1.0,2.0,4.0,12312312,12f,"GPS",0)
+        val fix2 = WayFix(1,4.0,3.0,6.0,22312312,142f,"NETWORK",0)
         wordWaysDao.insertFix(fix1)
         wordWaysDao.insertFix(fix2)
 
 
 
-
-        var ways =wordWaysDao.getAllWays().waitForValue()
-        wordWaysDao.deleteByWayId(ways[0].wayId)
-        ways.drop(ways.size)
-        var fixes = wordWaysDao.getAllFixes().waitForValue()
-        ways = wordWaysDao.getAllWays().waitForValue()
         val users = wordWaysDao.getAlphabetizedUsers().waitForValue()
+        var ways =wordWaysDao.getAllWays().waitForValue()
+        var fixes = wordWaysDao.getAllFixes().waitForValue()
 
-        Assert.assertTrue(!ways.isEmpty())
+        val a = wordWaysDao.allWayFixByWayId(wayId = ways[0].wayId).waitForValue()
+
+
+        Assert.assertTrue(a != null)
+
+
         //ways.drop(ways.size)
         //wordWaysDao.deleteUser("Alex")
         //ways = waysDao.getAllWays().waitForValue()
         //Assert.assertTrue(ways.isEmpty())
-
-        wordWaysDao.deleteFix(fixes[0])
-        fixes.drop(fixes.size)
-        fixes = wordWaysDao.getAllFixes().waitForValue()
-        val a = fixes.isEmpty()
-        Assert.assertTrue(fixes.isEmpty())
         //wordWaysDao.deleteAll()
         //al allWords = wordWaysDao.getAlphabetizedUsers().waitForValue()
-
         //Assert.assertTrue(allWords.isEmpty())
     }
     /*

@@ -15,9 +15,14 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.LoginViewModel
 import ru.vanchikov.fitnesinmylife.data.UserAccount
+import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
+import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 import ru.vanchikov.fitnesinmylife.ui.Navigation.NavigationActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -111,9 +116,11 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.getLogin(username.text.toString(), password.text.toString()) //login(username.text.toString(), password.text.toString())
             }
             //TODO : DELETE THIS
-            loginViewModel.getLogin(username.text.toString(), password.text.toString())
+           // loginViewModel.getLogin(username.text.toString(), password.text.toString())
         }
+
     }
+
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
