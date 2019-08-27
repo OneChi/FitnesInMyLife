@@ -37,7 +37,7 @@ class GpsServiceApp: Service(),LocationListener {
     var canGetLocation = false
     val MIN_TIME_BW_UPDATES  : Long = 1000*3
     val MIN_DISTANCE_CHANGE_FOR_UPDATES : Float = 1f
-    lateinit var dataSet : Array<Location>
+    var dataSet : Array<Location> = emptyArray<Location>()
     private var currentProvider : Int = 0 // 0 - null 1 - GPS 2 - Network
     private var listeningLocationState : Boolean = false // 0 - not listening 1 - listening
 
@@ -192,7 +192,7 @@ class GpsServiceApp: Service(),LocationListener {
 
     fun stopListeningData(){
         listeningLocationState = false
-        locationManager.removeUpdates(locationListener)
+
     }
 
     fun getData(): Array<Location>{
@@ -225,7 +225,7 @@ class GpsServiceApp: Service(),LocationListener {
     override fun onLocationChanged(location: Location?) {
         Log.w(LOG_TAG,"LOCATION CHANGED PROVIDER= ${location?.provider.toString()}")
         if (listeningLocationState && location!=null) {
-            dataSet.plus(location!!)
+           dataSet = dataSet.plus(location!!)
         }
     }
 

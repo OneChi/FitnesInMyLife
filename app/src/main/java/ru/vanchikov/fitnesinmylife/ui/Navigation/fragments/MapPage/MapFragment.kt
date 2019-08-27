@@ -105,6 +105,10 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
     }
 
     override fun onClick(v: View?) {
+        if (ActivityCompat.checkSelfPermission(this.activity!!.baseContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            makeToastShort("нет прав доступа")
+            return
+        }
         when(v?.id) {
             ru.vanchikov.fitnesinmylife.R.id.fb_GetMyLoc ->{
                 try {
@@ -120,7 +124,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
 
                     googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
                     //googleMap.moveCamera(CameraUpdateFactory.newLatLng(me))
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,5f), 1000*2, null)
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
 
 
 
@@ -129,7 +133,35 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                 }
             }
             ru.vanchikov.fitnesinmylife.R.id.fb_addWayOnMap ->{
+                try {
+                    if(!mapViewModel.listeningWayState) {
 
+                    googleMap.clear()
+                        var newLoc: Location? = mapViewModel.getLastLoc()
+                        val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
+                        googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
+                    mapViewModel.startListeningLoc(
+                        mapViewModel.MIN_TIME_BW_UPDATES,
+                        mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
+                    )
+                    } else {
+                    mapViewModel.stopListeningLocUpdate()
+                        var polygoneline = PolylineOptions()
+                        var locData= mapViewModel.getLocationData()
+                        for(a in locData)
+                        {
+                            polygoneline.add(LatLng(a.latitude, a.longitude))
+                            //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude)))
+                        }
+                        polygoneline.color(Color.MAGENTA).width(10f)
+                        googleMap.addPolyline(polygoneline)
+
+
+                }
+                } catch (ex: Exception){
+            Log.w(LOG_TAG, ex.toString())
+        }
             }
         }
     }
@@ -153,28 +185,28 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
 
 
 
-override fun onStop() {
-    super.onStop()
-    if (mapViewModel.getBinder() != null) {
-        activity!!.unbindService(mapViewModel.getServiceConnection())
-    }
-}
-
-
-private fun startGpsService() {
-    serviceIntent = Intent(".GpsServiceApp")
-    serviceIntent.setPackage("ru.vanchikov.fitnesinmylife")
-    activity!!.startService(serviceIntent)
-    activity!!.bindService(serviceIntent,  mapViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE)
-    /*
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent)
+    override fun onStop() {
+        super.onStop()
+        if (mapViewModel.getBinder() != null) {
+            activity!!.unbindService(mapViewModel.getServiceConnection())
         }
-        else {
-        startService(serviceIntent)
-    }*/
-    Log.w(LOG_TAG,"SERVICE_STARTED")
-}
+    }
+
+
+    private fun startGpsService() {
+        serviceIntent = Intent(".GpsServiceApp")
+        serviceIntent.setPackage("ru.vanchikov.fitnesinmylife")
+        activity!!.startService(serviceIntent)
+        activity!!.bindService(serviceIntent,  mapViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE)
+        /*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            }
+            else {
+            startService(serviceIntent)
+        }*/
+        Log.w(LOG_TAG,"SERVICE_STARTED")
+    }
 
 
 
@@ -183,16 +215,16 @@ private fun startGpsService() {
 
 
 
-/**
- * This interface must be implemented by activities that contain this
- * fragment to allow an interaction in this fragment to be communicated
- * to the activity and potentially other fragments contained in that
- * activity.
- *
- *
- * See the Android Training lesson [Communicating with Other Fragments]
- * (http://developer.android.com/training/basics/fragments/communicating.html)
- * for more information.
- */
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     *
+     *
+     * See the Android Training lesson [Communicating with Other Fragments]
+     * (http://developer.android.com/training/basics/fragments/communicating.html)
+     * for more information.
+     */
 
 }

@@ -25,7 +25,8 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
     private lateinit var  service: GpsServiceApp
     private lateinit var  repository : ServiceRepository
 
-    var currentWayState : Boolean = false
+    var listeningWayState = false
+    var currentWayState : Boolean = false //загружен или нет
     var currentWay : UserWays? = null
     lateinit var currentWayFixList : List<WayFix>
 
@@ -65,10 +66,12 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
 
     fun startListeningLoc(timeBwUpdates : Long, distanceBwUpdates: Float){
         repository.startListeningLoc(timeBwUpdates,distanceBwUpdates)
+        listeningWayState = true
     }
 
     fun stopListeningLocUpdate(){
         repository.stopListeningLocUpdate()
+        listeningWayState = false
     }
 
     fun getLocationData() : Array<Location>{
