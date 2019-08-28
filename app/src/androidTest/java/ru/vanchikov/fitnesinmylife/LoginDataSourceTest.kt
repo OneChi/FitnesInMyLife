@@ -39,7 +39,6 @@ class WordDaoTest {
             .allowMainThreadQueries()
             .build()
         wordWaysDao = db.getUsersDao()
-
     }
 
     @After
@@ -110,24 +109,46 @@ class WordDaoTest {
         wordWaysDao.insert(NewLoggedInUser4)
 
 
-        val way1 = UserWays(1,"Alex",242, "toHome",134134)
-        val way2 = UserWays(2,"Alex",321, "toWork",21414)
-        val way3 = UserWays(3,"Alex",542, "toSchool",43143)
-        val way4 = UserWays(4,"Alex",341,"toShop",31513)
+        val way1 = UserWays(0,"Alex",242, "toHome",134134)
+        val way2 = UserWays(0,"Alex",321, "toWork",21414)
+        val way3 = UserWays(0,"Alex",542, "toSchool",43143)
+        val way4 = UserWays(0,"Alex",341,"toShop",31513)
 
-        wordWaysDao.insertWay(way1)
+       // wordWaysDao.insertWay(way1)
+       // wordWaysDao.insertWay(way2)
+       // wordWaysDao.insertWay(way3)
+        //wordWaysDao.insertWay(way4)
+
+        //val fix1 = WayFix(1,1.0,2.0,4.0,12312312,12f,"GPS",0)
+        //val fix2 = WayFix(1,4.0,3.0,6.0,22312312,142f,"NETWORK",0)
+        //wordWaysDao.insertFix(fix1)
+        //wordWaysDao.insertFix(fix2)
+        // wordWaysDao.insertWay(way1)
         wordWaysDao.insertWay(way2)
-        wordWaysDao.insertWay(way3)
+         wordWaysDao.insertWay(way3)
+        val key = wordWaysDao.insertWay(way1)
         wordWaysDao.insertWay(way4)
 
-        val fix1 = WayFix(1,1.0,2.0,4.0,12312312,12f,"GPS",0)
-        val fix2 = WayFix(1,4.0,3.0,6.0,22312312,142f,"NETWORK",0)
-        wordWaysDao.insertFix(fix1)
-        wordWaysDao.insertFix(fix2)
 
-
-
+        wordWaysDao.deleteByWayId(1)
+        wordWaysDao.deleteByWayId(2)
+        wordWaysDao.deleteByWayId(3)
+        wordWaysDao.deleteByWayId(4)
+        var ways1 =wordWaysDao.getAllWays().waitForValue()
         val users = wordWaysDao.getAlphabetizedUsers().waitForValue()
+        val key1 = wordWaysDao.insertWay(way1)
+
+
+
+        val fix1 = WayFix(0,1.0,2.0,4.0,12312312,12f,"GPS",0)
+        val fix2 = WayFix(0,4.0,3.0,6.0,22312312,142f,"NETWORK",0)
+        var listOfFixes = emptyList<WayFix>()
+        listOfFixes = listOfFixes.plus(fix1)
+        listOfFixes = listOfFixes.plus(fix2)
+
+
+
+
         var ways =wordWaysDao.getAllWays().waitForValue()
         var fixes = wordWaysDao.getAllFixes().waitForValue()
 

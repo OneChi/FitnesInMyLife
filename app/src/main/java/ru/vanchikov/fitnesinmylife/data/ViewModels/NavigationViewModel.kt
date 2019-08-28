@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import ru.vanchikov.fitnesinmylife.data.Repository.DataRepository
 import ru.vanchikov.fitnesinmylife.data.Database.UsersRoomDatabase
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
@@ -60,9 +63,9 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
     {
         return dataRepository.allWayFixByWayId(wayId)
     }
-    suspend fun insertWayFix(fix : WayFix)
+    fun insertWayFix(fix : WayFix)
     {
-        dataRepository.insertWayFix(fix)
+       viewModelScope.launch { dataRepository.insertWayFix(fix)}
     }
     suspend fun deleteFix(fix: WayFix) : Int
     {
@@ -77,9 +80,12 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
     {
         return dataRepository.getAllFixes()
     }
-    suspend fun insertWay(way: UserWays)
+    suspend fun insertWay(way: UserWays) : Long
     {
-        return dataRepository.insertWay(way)
+        var wayId : Long = -5
+
+      wayId = dataRepository.insertWay(way = way)
+        return  wayId
     }
     fun deleteWayById(wayId : Long) : Int
     {

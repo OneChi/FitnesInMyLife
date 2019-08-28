@@ -16,8 +16,6 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import java.lang.Exception
-import java.lang.reflect.Executable
 
 class GpsServiceApp: Service(),LocationListener {
 
@@ -204,7 +202,7 @@ class GpsServiceApp: Service(),LocationListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.w(LOG_TAG, "ON START COMMAND $startId")
+        //Log.w(LOG_TAG, "ON START COMMAND $startId")
 
         return super.onStartCommand(intent, flags, startId)
 
@@ -225,7 +223,7 @@ class GpsServiceApp: Service(),LocationListener {
     override fun onLocationChanged(location: Location?) {
         Log.w(LOG_TAG,"LOCATION CHANGED PROVIDER= ${location?.provider.toString()}")
         if (listeningLocationState && location!=null) {
-           dataSet = dataSet.plus(location!!)
+            dataSet = dataSet.plus(location!!)
         }
     }
 

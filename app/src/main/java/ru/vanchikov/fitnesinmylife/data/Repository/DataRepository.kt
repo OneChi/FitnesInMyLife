@@ -121,7 +121,7 @@ class DataRepository(val dataSource: UsersWaysDao) {
     {
         return dataSource.getAllFixes()
     }
-    suspend fun insertWay(way: UserWays)
+    suspend fun insertWay(way: UserWays) : Long
     {
         return dataSource.insertWay(way)
     }

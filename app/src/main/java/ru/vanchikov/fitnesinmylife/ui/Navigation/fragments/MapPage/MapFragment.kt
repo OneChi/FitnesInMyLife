@@ -16,21 +16,27 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import ru.vanchikov.fitnesinmylife.data.ViewModels.MapPageViewModel
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
+import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import ru.vanchikov.fitnesinmylife.data.model.WayFix
 import ru.vanchikov.fitnesinmylife.util.makeToastShort
 
 
 class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, View.OnClickListener {
     private lateinit var navigationViewModel : NavigationViewModel
-    private val LOG_TAG = "MAP_FRAGMENT_LOG"
+    private val LOG_TAG = "MapFragmentView"
     private lateinit var mapViewModel : MapPageViewModel
     private lateinit var mapView: MapView
     private lateinit var  googleMap : GoogleMap
@@ -57,7 +63,6 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
             activity.let { ViewModelProviders.of(it!!).get(NavigationViewModel::class.java) }
 
 
-
         floatButtonLeft.setOnClickListener(this)
         floatButtonRight.setOnClickListener(this)
 
@@ -69,38 +74,50 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
     }
 
     fun setCurrentWayOnMap(){
-        if(navigationViewModel?.currentWayLoadState ==true && (navigationViewModel?.currentWayOnMap != null)) {
-            mapViewModel.currentWayState = true
-            mapViewModel.currentWay = navigationViewModel?.currentWayOnMap
-            navigationViewModel!!.allWayFixByWayId(mapViewModel.currentWay!!.wayId).observe(this, Observer { mapViewModel.currentWayFixList = it
-                Log.d(LOG_TAG,"${it.size}")
-
-                if (mapViewModel.currentWayState ==true) {
-                    val polyline = PolylineOptions()
-
-                    for (a in mapViewModel.currentWayFixList) {
-                        polyline.add(LatLng(a.latitude, a.longtitude))
-
-                        googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longtitude)).title("Marker at Me"))
+        try {
+            if(navigationViewModel?.currentWayLoadState ==true && (navigationViewModel?.currentWayOnMap != null)) {
+                mapViewModel.currentWayState = true
+                mapViewModel.currentWay = navigationViewModel?.currentWayOnMap
+                navigationViewModel!!.getAllFixes().observe(this, Observer {
+                    Log.d(LOG_TAG,"fixes all = ${it.size}")
+                    for(a in it){
+                        Log.d(LOG_TAG, "wayID = ${a.wayId} fixId = ${a.fixId}")
                     }
-                    var newLoc: Location? = mapViewModel.getLastLoc()
-                    polyline.color(Color.MAGENTA)
-                    polyline.width(20f)
-                    googleMap.addPolyline(polyline)
-                }
-            })
-            //navigationViewModel?.getAllFixes()!!.observe(this, Observer { Log.d(LOG_TAG,"${it.size}") })
-            //navigationViewModel?.allWayFixByWayId( mapViewModel.currentWay!!.wayId)!!.observe(this, Observer { })
 
+                })
 
-        } else if (navigationViewModel?.currentWayLoadState == true && (navigationViewModel?.currentWayOnMap == null)){
-            navigationViewModel?.currentWayLoadState = false
+                navigationViewModel!!.allWayFixByWayId(mapViewModel.currentWay!!.wayId).observe(this, Observer { mapViewModel.currentWayFixList = it
+                    Log.d(LOG_TAG,"fixes = ${it.size}")
+
+                    if (mapViewModel.currentWayState ==true) {
+                        val polyline = PolylineOptions()
+                        val FirstFix = LatLng(mapViewModel.currentWayFixList[0].latitude,mapViewModel.currentWayFixList[0].longtitude)
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(FirstFix,30f),1000*2,null)
+                        for (a in mapViewModel.currentWayFixList) {
+                            polyline.add(LatLng(a.latitude, a.longtitude))
+
+                            googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longtitude)).title("Marker at Me"))
+                        }
+                        var newLoc: Location? = mapViewModel.getLocation()
+                        polyline.color(Color.MAGENTA)
+                        polyline.width(20f)
+                        googleMap.addPolyline(polyline)
+
+                    }
+                })
+            } else if (navigationViewModel?.currentWayLoadState == true && (navigationViewModel?.currentWayOnMap == null)){
+                navigationViewModel?.currentWayLoadState = false
+            }
+        } catch (ex : java.lang.Exception){
+            Log.d(LOG_TAG, ex.toString())
         }
+
     }
 
     override fun onResume() {
-        mapView.getMapAsync(this)//when you already implement OnMapReadyCallback in your fragment
         startGpsService()
+        Log.d(LOG_TAG,"StartService on resume")
+        mapView.getMapAsync(this)
         super.onResume()
     }
 
@@ -116,18 +133,11 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                         makeToastShort("нет прав доступа")
                         return
                     }
-
-                    var newLoc: Location? = mapViewModel.getLastLoc() //(activity as NavigationActivity).service?.getLocation()!!//locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
+                    var newLoc: Location? = mapViewModel.getLocation()
                     val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
                     googleMap.clear()
-
                     googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
-                    //googleMap.moveCamera(CameraUpdateFactory.newLatLng(me))
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
-
-
-
                 } catch (ex: Exception){
                     Log.w(LOG_TAG, ex.toString())
                 }
@@ -136,44 +146,73 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                 try {
                     if(!mapViewModel.listeningWayState) {
 
-                    googleMap.clear()
-                        var newLoc: Location? = mapViewModel.getLastLoc()
+                        googleMap.clear()
+                        var newLoc: Location? = mapViewModel.getLocation()
                         val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
                         googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
-                    mapViewModel.startListeningLoc(
-                        mapViewModel.MIN_TIME_BW_UPDATES,
-                        mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
-                    )
+                        mapViewModel.startListeningLoc(
+                            mapViewModel.MIN_TIME_BW_UPDATES,
+                            mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
+                        )
                     } else {
-                    mapViewModel.stopListeningLocUpdate()
+                        mapViewModel.stopListeningLocUpdate()
                         var polygoneline = PolylineOptions()
                         var locData= mapViewModel.getLocationData()
                         for(a in locData)
                         {
                             polygoneline.add(LatLng(a.latitude, a.longitude))
-                            //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude)))
+                            //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
+                            googleMap.addCircle(CircleOptions()
+                                .center(LatLng(a.latitude, a.longitude)).radius(0.5)
+                                .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                                .strokeWidth(1f))
+
                         }
-                        polygoneline.color(Color.MAGENTA).width(10f)
-                        googleMap.addPolyline(polygoneline)
+
+                        var newWay = UserWays(0,navigationViewModel.userAccount!!.userId,0,"newWay",locData[0].time)
+                        try {
+                            navigationViewModel.viewModelScope.launch {
+                            var wayId: Long = navigationViewModel.insertWay(newWay)
 
 
-                }
+                            var newFixList = emptyArray<WayFix>()
+                            for (a in locData) {
+                                var wayFix = mapViewModel.convertToWayFix(a, wayId)
+
+                                navigationViewModel.insertWayFix(wayFix)
+                            }
+
+
+                            polygoneline.color(Color.MAGENTA).width(10f)
+                            googleMap.addPolyline(polygoneline)
+                        }
+                        }catch (ex: java.lang.Exception){
+                            Log.d(LOG_TAG,"${ex.toString()}")
+                        }
+                    }
                 } catch (ex: Exception){
-            Log.w(LOG_TAG, ex.toString())
-        }
+                    Log.w(LOG_TAG, ex.toString())
+                }
             }
         }
     }
 
     override fun onMapReady(map: GoogleMap) {
+        Log.d(LOG_TAG,"OnMapReady")
         googleMap = map
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        setCurrentWayOnMap()
+        //mapViewModel.currentPos = mapViewModel.getLocation()
 
+        if(mapViewModel.currentPos == null) {
+            val Moscow = LatLng(55.45, 37.37)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Moscow,5f))
+        }  else {
+            val myLoc = LatLng(mapViewModel.currentPos!!.latitude,mapViewModel.currentPos!!.longitude)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLoc))
+            googleMap.addMarker(MarkerOptions().position(myLoc).title("Me"))
+        }
+
+        setCurrentWayOnMap()
         /*
      .add(LatLng(-5.0, -30.0)).add(LatLng(-5.0, -20.0))
     .add(LatLng(5.0, -20.0)).add(LatLng(5.0, -30.0))
@@ -196,6 +235,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
     private fun startGpsService() {
         serviceIntent = Intent(".GpsServiceApp")
         serviceIntent.setPackage("ru.vanchikov.fitnesinmylife")
+
         activity!!.startService(serviceIntent)
         activity!!.bindService(serviceIntent,  mapViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE)
         /*

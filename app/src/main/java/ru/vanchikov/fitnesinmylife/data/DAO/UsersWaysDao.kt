@@ -5,12 +5,23 @@ import androidx.room.*
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
 import ru.vanchikov.fitnesinmylife.data.model.WayFix
+import androidx.room.Transaction
+
+
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
 @Dao
 interface UsersWaysDao {
+
+
+    @Insert
+    suspend abstract fun isertManyFixes(fixes: List<WayFix>)
+
+    @Query("SELECT wayId from users_ways_table where rowid = :key")
+    suspend abstract fun getLastInsertedWayId(key: Long): Long
+
 
     @Query("SELECT * from users_table ORDER BY email ASC")
     fun getAlphabetizedUsers(): LiveData<List<LoggedInUser>>
@@ -39,6 +50,9 @@ interface UsersWaysDao {
     @Insert
     suspend fun insertFix(fix : WayFix)
 
+
+
+
     @Delete
     suspend fun deleteFix(fix : WayFix) : Int
 
@@ -49,7 +63,7 @@ interface UsersWaysDao {
     fun getAllFixes(): LiveData<List<WayFix>>
 
     @Insert
-    suspend fun insertWay(way: UserWays)
+    suspend fun insertWay(way: UserWays) : Long
 
     @Query("DELETE FROM users_ways_table WHERE wayId = :wayId")
     fun deleteByWayId(wayId: Long) : Int

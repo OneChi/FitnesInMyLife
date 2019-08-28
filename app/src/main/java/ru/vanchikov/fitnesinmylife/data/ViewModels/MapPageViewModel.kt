@@ -22,7 +22,7 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
     private val LOG_TAG="MapViewModel"
     val MIN_TIME_BW_UPDATES  : Long = 1000*3
     val MIN_DISTANCE_CHANGE_FOR_UPDATES : Float = 1f
-    private lateinit var  service: GpsServiceApp
+    lateinit var  service: GpsServiceApp
     private lateinit var  repository : ServiceRepository
 
     var listeningWayState = false
@@ -30,7 +30,9 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
     var currentWay : UserWays? = null
     lateinit var currentWayFixList : List<WayFix>
 
+    var currentPos : Location? = null
     private val mBinder = MutableLiveData<GpsServiceApp.MyBinder>()
+
 
     // Keeping this in here because it doesn't require a context
     private val serviceConnection = object : ServiceConnection {
@@ -49,9 +51,9 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun convertToWayFix(loc : Location): WayFix{
+    fun convertToWayFix(loc : Location , wayId: Long): WayFix{
         var fix : WayFix = WayFix(
-            wayId = 0,
+            wayId = wayId,
             altitude = loc.altitude,
             latitude = loc.latitude,
             longtitude = loc.longitude,
@@ -83,7 +85,7 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
     }
 
 
-    fun getLastLoc(): Location? {
+    fun getLocation(): Location? {
         return repository.getLastKnownLoc()
     }
 
