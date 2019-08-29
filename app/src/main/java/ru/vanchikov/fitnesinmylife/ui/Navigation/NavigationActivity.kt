@@ -139,11 +139,13 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         // as you specify a parent activity in AndroidManifest.xml.
         val navController = findNavController(R.id.nav_host_fragment)
         //NavigationUI.onNavDestinationSelected(item, navController)
+        /*
         return when (item.itemId) {
             R.id.action_settings -> true
 
             else -> item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
-        }
+        }*/
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

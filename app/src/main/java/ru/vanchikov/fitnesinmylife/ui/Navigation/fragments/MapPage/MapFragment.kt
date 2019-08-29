@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.fragment_map_page.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.vanchikov.fitnesinmylife.data.ViewModels.MapPageViewModel
@@ -142,27 +143,30 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                     googleMap.clear()
                     googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
+                    setCurrentWayOnMap()
                 } catch (ex: Exception){
                     Log.w(LOG_TAG, ex.toString())
                 }
             }
             ru.vanchikov.fitnesinmylife.R.id.fb_addWayOnMap ->{
                 try {
-                    if(!mapViewModel.listeningWayState) {
+                    if(!mapViewModel.listeningWayState) {                                            /******************/
 
                         googleMap.clear()
                         var newLoc: Location? = mapViewModel.getLocation()
                         val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
-                        googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
+                        googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))                 //LISTENING WAY
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
                         mapViewModel.startListeningLoc(
                             mapViewModel.MIN_TIME_BW_UPDATES,
                             mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
-                        )
+                        )                                                                           /*******************/
                     } else {
                         mapViewModel.stopListeningLocUpdate()
                         var polygoneline = PolylineOptions()
+
                         var locData= mapViewModel.getLocationData()
+                        mapViewModel.clearData()
                         for(a in locData)
                         {
                             polygoneline.add(LatLng(a.latitude, a.longitude))
@@ -187,9 +191,6 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                                 navigationViewModel.insertWayFix(wayFix)
                             }
 
-
-                            polygoneline.color(Color.MAGENTA).width(10f)
-                            googleMap.addPolyline(polygoneline)
                         }
                         }catch (ex: java.lang.Exception){
                             Log.d(LOG_TAG,"${ex.toString()}")

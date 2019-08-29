@@ -138,7 +138,7 @@ class GpsServiceApp: Service(),LocationListener {
             // e.printStackTrace();
             Log.w(LOG_TAG, "no rights to get location in getLocation func")
         }
-
+        locationManager.removeUpdates(this)
         return location
     }
     //MIN_TIME_BW_UPDATES,
@@ -160,7 +160,8 @@ class GpsServiceApp: Service(),LocationListener {
 
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
-                    locationManager.requestLocationUpdates(
+
+                   locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, timeBwUpdates,
                         distanceBwUpdates, this
                     )
@@ -190,7 +191,7 @@ class GpsServiceApp: Service(),LocationListener {
 
     fun stopListeningData(){
         listeningLocationState = false
-
+        locationManager.removeUpdates(this)
     }
 
     fun getData(): Array<Location>{
@@ -198,7 +199,7 @@ class GpsServiceApp: Service(),LocationListener {
     }
 
     fun clearData(){
-        dataSet.drop(dataSet.size)
+       dataSet = emptyArray<Location>()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -224,6 +225,7 @@ class GpsServiceApp: Service(),LocationListener {
         Log.w(LOG_TAG,"LOCATION CHANGED PROVIDER= ${location?.provider.toString()}")
         if (listeningLocationState && location!=null) {
             dataSet = dataSet.plus(location!!)
+
         }
     }
 

@@ -116,7 +116,7 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.getLogin(username.text.toString(), password.text.toString()) //login(username.text.toString(), password.text.toString())
             }
             //TODO : DELETE THIS
-           // loginViewModel.getLogin(username.text.toString(), password.text.toString())
+            loginViewModel.getLogin(username.text.toString(), password.text.toString())
         }
 
     }

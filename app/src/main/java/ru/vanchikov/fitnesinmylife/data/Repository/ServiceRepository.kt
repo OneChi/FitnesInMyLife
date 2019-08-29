@@ -14,6 +14,7 @@ class ServiceRepository(val service: GpsServiceApp) {
 
     fun stopListeningLocUpdate(){
         service.stopListeningData()
+
     }
 
     fun getLocationData() : Array<Location>{
