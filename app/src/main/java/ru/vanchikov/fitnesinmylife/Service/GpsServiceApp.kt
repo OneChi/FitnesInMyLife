@@ -16,6 +16,9 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import ru.vanchikov.fitnesinmylife.ui.login.LoginFormState
 
 class GpsServiceApp: Service(),LocationListener {
 
@@ -39,6 +42,10 @@ class GpsServiceApp: Service(),LocationListener {
     private var currentProvider : Int = 0 // 0 - null 1 - GPS 2 - Network
     private var listeningLocationState : Boolean = false // 0 - not listening 1 - listening
 
+    private val _dataSet = MutableLiveData<Array<Location>>()
+    val liveDataSet: LiveData<Array<Location>> = _dataSet
+
+
     // IBinder
     inner class MyBinder : Binder() {
         val service: GpsServiceApp
@@ -52,6 +59,7 @@ class GpsServiceApp: Service(),LocationListener {
     override fun onCreate() {
         super.onCreate()
         Log.w(LOG_TAG, "SERVICE_CREATE")
+        _dataSet.value = emptyArray()
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
@@ -202,6 +210,14 @@ class GpsServiceApp: Service(),LocationListener {
        dataSet = emptyArray<Location>()
     }
 
+    fun getLiveData(): LiveData<Array<Location>>{
+        return liveDataSet
+    }
+
+    fun clearLiveData(){
+        _dataSet.value = emptyArray<Location>()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //Log.w(LOG_TAG, "ON START COMMAND $startId")
 
@@ -225,6 +241,7 @@ class GpsServiceApp: Service(),LocationListener {
         Log.w(LOG_TAG,"LOCATION CHANGED PROVIDER= ${location?.provider.toString()}")
         if (listeningLocationState && location!=null) {
             dataSet = dataSet.plus(location!!)
+            _dataSet.value = _dataSet.value!!.plus(location!!)
 
         }
     }

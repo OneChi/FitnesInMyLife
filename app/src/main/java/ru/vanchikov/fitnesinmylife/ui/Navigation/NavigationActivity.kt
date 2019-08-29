@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.UserAccount
+import ru.vanchikov.fitnesinmylife.data.ViewModels.MapPageViewModel
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.LoggedInUser
 
@@ -34,7 +35,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private lateinit var nav_header_email: TextView
     private lateinit var navigationViewModel: NavigationViewModel
     private lateinit var navController: NavController
-
+    private lateinit var mapViewModel : MapPageViewModel
     //PERMISSIONS
     var MY_PERMISSIONS_REQUEST_ACC_FINE_LOC: Int = 1
 
@@ -46,6 +47,7 @@ class NavigationActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         setContentView(R.layout.activity_navigation)
         userInfo = UserAccount.user
         val navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
+        mapViewModel = ViewModelProviders.of(this).get(MapPageViewModel::class.java)
         navigationViewModel.userAccount = userInfo
         initMenu()
 

@@ -9,9 +9,12 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickListener) : RecyclerView.Adapter<UserWaysAdapter.UserWayHolder>() {
 
@@ -24,7 +27,7 @@ class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickL
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): UserWayHolder {
         val itemView : View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.way_list_item,parent,false)
+            .inflate(ru.vanchikov.fitnesinmylife.R.layout.way_list_item,parent,false)
         return UserWayHolder(itemView,activity)
     }
 
@@ -32,7 +35,7 @@ class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickL
         val currWay : UserWays = ways.get(position)
         navigationViewModel.currentWayOnMap = currWay
         holder.textViewName.text = currWay.wayName
-        holder.textViewInfo.text = currWay.wayTime.toString()
+        holder.textViewInfo.text = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z").format(currWay.wayTime);
 
         // тут можно НАПРИМЕР положить какую-то инфу в tag вью и установить ClickListener
         // в данном случае мы кладём инфу в tag кнопки btnInspect. Можно было бы положить в само вью
@@ -61,9 +64,11 @@ class UserWaysAdapter(val activity: FragmentActivity, val listener: OnUserClickL
         val btnInspect : Button
 
         init {
-            textViewName = itemView.findViewById(R.id.textViewName)
-            textViewInfo = itemView.findViewById(R.id.textViewInfo)
-            btnInspect   = itemView.findViewById(R.id.inspect_btn)
+            textViewName = itemView.findViewById(ru.vanchikov.fitnesinmylife.R.id.textViewName)
+
+            textViewInfo = itemView.findViewById(ru.vanchikov.fitnesinmylife.R.id.textViewInfo)
+            btnInspect   = itemView.findViewById(ru.vanchikov.fitnesinmylife.R.id.inspect_btn)
+
 
             // Переделаем это в использование интерфейса
             /*val navigationViewModel : NavigationViewModel =  ViewModelProviders.of(activity).get(NavigationViewModel::class.java)

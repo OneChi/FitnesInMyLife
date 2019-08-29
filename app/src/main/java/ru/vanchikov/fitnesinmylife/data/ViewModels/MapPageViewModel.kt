@@ -84,6 +84,13 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
         repository.clearData()
     }
 
+    fun getLiveData(): LiveData<Array<Location>> {
+        return repository.getLiveData()
+    }
+
+    fun clearLiveData(){
+        repository.clearData()
+    }
 
     fun getLocation(): Location? {
         return repository.getLastKnownLoc()

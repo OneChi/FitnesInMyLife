@@ -32,6 +32,7 @@ import ru.vanchikov.fitnesinmylife.data.ViewModels.MapPageViewModel
 import ru.vanchikov.fitnesinmylife.data.ViewModels.NavigationViewModel
 import ru.vanchikov.fitnesinmylife.data.model.UserWays
 import ru.vanchikov.fitnesinmylife.data.model.WayFix
+import ru.vanchikov.fitnesinmylife.util.makeToastLong
 import ru.vanchikov.fitnesinmylife.util.makeToastShort
 
 
@@ -59,7 +60,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
         val floatButtonLeft = view.findViewById<FloatingActionButton>(ru.vanchikov.fitnesinmylife.R.id.fb_GetMyLoc)
         val floatButtonRight = view.findViewById<FloatingActionButton>(ru.vanchikov.fitnesinmylife.R.id.fb_addWayOnMap)
 
-        mapViewModel = ViewModelProviders.of(this).get(MapPageViewModel::class.java)
+        mapViewModel =  activity.let { ViewModelProviders.of(it!!).get(MapPageViewModel::class.java)}
         navigationViewModel =
             activity.let { ViewModelProviders.of(it!!).get(NavigationViewModel::class.java) }
 
@@ -76,7 +77,28 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
 
     fun setCurrentWayOnMap(){
         try {
-            if(navigationViewModel?.currentWayLoadState ==true && (navigationViewModel?.currentWayOnMap != null)) {
+            var polygoneline2 = PolylineOptions()
+           if (mapViewModel.currentWayState) {
+               mapViewModel.getLiveData().observe(this, Observer {
+
+                    googleMap.clear()
+                   //val lastStamp = LatLng(it.last().latitude, it.last().longitude)
+                   //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastStamp,30f),1000*2,null)
+                   makeToastShort("addDot ${it.size}")
+                   for(a in it)
+                   {
+                       polygoneline2.add(LatLng(a.latitude, a.longitude))
+                       //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
+                       googleMap.addCircle(CircleOptions()
+                           .center(LatLng(a.latitude, a.longitude)).radius(0.5)
+                           .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                           .strokeWidth(1f))
+
+                   }
+                   googleMap.addPolyline(polygoneline2)
+               })
+
+           } else if(navigationViewModel?.currentWayLoadState ==true && (navigationViewModel?.currentWayOnMap != null)) {
                 mapViewModel.currentWayState = true
                 mapViewModel.currentWay = navigationViewModel?.currentWayOnMap
                 navigationViewModel!!.getAllFixes().observe(this, Observer {
@@ -152,8 +174,13 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
             }
             ru.vanchikov.fitnesinmylife.R.id.fb_addWayOnMap ->{
                 try {
-                    if(!mapViewModel.listeningWayState) {                                            /******************/
-
+                    if(!mapViewModel.listeningWayState) {
+                        makeToastLong("Фиксация начата")                                      /******************/
+                        navigationViewModel.currentWayOnMap = null
+                        navigationViewModel.currentWayLoadState = false
+                        mapViewModel.currentWay = null
+                        mapViewModel.currentWayState = false
+                        mapViewModel.currentWayFixList = emptyList()
                         googleMap.clear()
                         var newLoc: Location? = mapViewModel.getLocation()
                         val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
@@ -162,13 +189,37 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                         mapViewModel.startListeningLoc(
                             mapViewModel.MIN_TIME_BW_UPDATES,
                             mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
-                        )                                                                           /*******************/
-                    } else {
+                        )
+                        var polygoneline2 = PolylineOptions()
+                        mapViewModel.getLiveData().observe(this, Observer {
+
+
+                            //val lastStamp = LatLng(it.last().latitude, it.last().longitude)
+                            //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastStamp,30f),1000*2,null)
+                            googleMap.clear()
+                            makeToastShort("addDot ${it.size}")
+                            for(a in it)
+                            {
+                                polygoneline2.add(LatLng(a.latitude, a.longitude))
+                                //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
+                                googleMap.addCircle(CircleOptions()
+                                    .center(LatLng(a.latitude, a.longitude)).radius(0.5)
+                                    .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                                    .strokeWidth(1f))
+
+                            }
+                            googleMap.addPolyline(polygoneline2)
+                        })
+
+
+
+                    } else {                                                                                /*******************/
                         mapViewModel.stopListeningLocUpdate()
                         var polygoneline = PolylineOptions()
 
                         var locData= mapViewModel.getLocationData()
                         mapViewModel.clearData()
+                        mapViewModel.clearLiveData()
                         for(a in locData)
                         {
                             polygoneline.add(LatLng(a.latitude, a.longitude))
@@ -179,7 +230,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                                 .strokeWidth(1f))
 
                         }
-
+                        googleMap.addPolyline(polygoneline)
                         var newWay = UserWays(0,navigationViewModel.userAccount!!.userId,0,"newWay",locData[0].time)
                         try {
                             navigationViewModel.viewModelScope.launch {
@@ -194,6 +245,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                             }
 
                         }
+                            makeToastLong("Ваш путь зафиксирован")
                         }catch (ex: java.lang.Exception){
                             makeToastShort("${ex.toString()}")
                             Log.d(LOG_TAG,"${ex.toString()}")
