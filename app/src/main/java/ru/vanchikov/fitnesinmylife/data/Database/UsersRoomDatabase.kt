@@ -80,7 +80,8 @@ abstract class UsersRoomDatabase : RoomDatabase() {
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
             Log.d("MYDATABASE","INITDBSTART")
-            thisWaysDao.deleteAll()
+            //thisWaysDao.deleteAll()
+
             val NewLoggedInUser1 = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
             thisWaysDao.insert(NewLoggedInUser1)
             Log.d("MYDATABASE","INITDBEND")

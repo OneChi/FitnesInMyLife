@@ -82,10 +82,9 @@ class StoryPage : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.addFbWay -> {
-                Snackbar.make(v, "Floating button Add", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
 
-
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.mapPage)
+/*
                 val NewLoggedInUser2 = LoggedInUser("Djosh","Onetwo","qqqqqq", "b@b.c")
                 val NewLoggedInUser3 = LoggedInUser("Kerdan","Onethree","qqqqqq", "c@b.c")
                 val NewLoggedInUser4 = LoggedInUser("Okes","Onefour","qqqqqq", "d@b.c")
@@ -109,7 +108,9 @@ class StoryPage : Fragment(), View.OnClickListener {
                     navigationViewModel?.insertWayFix(fix1)
                     navigationViewModel?.insertWayFix(fix2)
                     Log.d("MYDATABASE","INITDBend2")
-                }
+
+                } */
+                //Snackbar.make(v, "Floating button Add", Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }
             else -> {
 

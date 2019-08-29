@@ -96,7 +96,11 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                         for (a in mapViewModel.currentWayFixList) {
                             polyline.add(LatLng(a.latitude, a.longtitude))
 
-                            googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longtitude)).title("Marker at Me"))
+                            googleMap.addCircle(CircleOptions()
+                                .center(LatLng(a.latitude, a.longtitude)).radius(0.5)
+                                .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                                .strokeWidth(1f))
+                            //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longtitude)).title("Marker at Me"))
                         }
                         var newLoc: Location? = mapViewModel.getLocation()
                         polyline.color(Color.MAGENTA)

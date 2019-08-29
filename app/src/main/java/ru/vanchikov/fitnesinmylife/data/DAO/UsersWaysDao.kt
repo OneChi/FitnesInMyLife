@@ -32,7 +32,7 @@ interface UsersWaysDao {
     @Query("SELECT * from users_table WHERE ((email = :userlogin ) OR (userId = :userlogin)) AND (password = :userpassword)")
     suspend fun getUserToken(userlogin : String, userpassword : String) : LoggedInUser
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: LoggedInUser)
 
     @Query("DELETE FROM users_table")
