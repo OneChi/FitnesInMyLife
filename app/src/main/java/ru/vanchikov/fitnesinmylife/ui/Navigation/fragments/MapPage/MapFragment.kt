@@ -114,6 +114,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                 navigationViewModel?.currentWayLoadState = false
             }
         } catch (ex : java.lang.Exception){
+            makeToastShort("${ex.toString()}")
             Log.d(LOG_TAG, ex.toString())
         }
 
@@ -145,6 +146,7 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
                     setCurrentWayOnMap()
                 } catch (ex: Exception){
+                    makeToastShort("${ex.toString()}")
                     Log.w(LOG_TAG, ex.toString())
                 }
             }
@@ -193,10 +195,12 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
 
                         }
                         }catch (ex: java.lang.Exception){
+                            makeToastShort("${ex.toString()}")
                             Log.d(LOG_TAG,"${ex.toString()}")
                         }
                     }
                 } catch (ex: Exception){
+                    makeToastShort("${ex.toString()}")
                     Log.w(LOG_TAG, ex.toString())
                 }
             }

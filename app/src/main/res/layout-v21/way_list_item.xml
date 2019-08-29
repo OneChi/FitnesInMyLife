@@ -44,7 +44,7 @@
 
         <Button
                 android:id="@+id/inspect_btn"
-                style="@android:style/Widget.Material.Button.Borderless"
+                style="@android:style/Widget.DeviceDefault.Light.Button.Borderless.Small"
                 android:layout_width="113dp"
                 android:layout_height="47dp"
                 android:text="Inspect"
