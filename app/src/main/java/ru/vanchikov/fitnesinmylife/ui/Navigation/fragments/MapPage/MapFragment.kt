@@ -42,11 +42,8 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
     private lateinit var mapViewModel : MapPageViewModel
     private lateinit var mapView: MapView
     private lateinit var  googleMap : GoogleMap
-
     // SERVICE
     lateinit var serviceIntent: Intent
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,30 +72,67 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
 
     }
 
+    override fun onResume() {
+        startGpsService()
+        Log.d(LOG_TAG,"StartService on resume")
+        mapView.getMapAsync(this)
+        super.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mapViewModel.getBinder() != null) {
+            activity!!.unbindService(mapViewModel.getServiceConnection())
+        }
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        Log.d(LOG_TAG,"OnMapReady")
+        googleMap = map
+        setStartMap()
+        setCurrentWayOnMap()
+    }
+
+    override fun onClick(v: View?) {
+
+        when(v?.id) {
+            ru.vanchikov.fitnesinmylife.R.id.fb_GetMyLoc ->{
+                chekPermissionsOnAccesFineLoc()
+                showMeOnMap()
+            }
+            ru.vanchikov.fitnesinmylife.R.id.fb_addWayOnMap ->{
+                chekPermissionsOnAccesFineLoc()
+                startTrackMyLocation()
+            }
+        }
+    }
+
     fun setCurrentWayOnMap(){
         try {
             var polygoneline2 = PolylineOptions()
-           if (mapViewModel.currentWayState) {
-               mapViewModel.getLiveData().observe(this, Observer {
+            /*if (mapViewModel.currentWayState) {
+                mapViewModel.getLiveData().observe(this, Observer {
 
-                    googleMap.clear()
-                   //val lastStamp = LatLng(it.last().latitude, it.last().longitude)
-                   //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastStamp,30f),1000*2,null)
-                   makeToastShort("addDot ${it.size}")
-                   for(a in it)
-                   {
-                       polygoneline2.add(LatLng(a.latitude, a.longitude))
-                       //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
-                       googleMap.addCircle(CircleOptions()
-                           .center(LatLng(a.latitude, a.longitude)).radius(0.5)
-                           .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
-                           .strokeWidth(1f))
+                     googleMap.clear()
+                    //val lastStamp = LatLng(it.last().latitude, it.last().longitude)
+                    //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastStamp,30f),1000*2,null)
+                    makeToastShort("addDot ${it.size}")
+                    for(a in it)
+                    {
+                        polygoneline2.add(LatLng(a.latitude, a.longitude))
+                        //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
+                        googleMap.addCircle(CircleOptions()
+                            .center(LatLng(a.latitude, a.longitude)).radius(0.5)
+                            .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                            .strokeWidth(1f))
 
-                   }
-                   googleMap.addPolyline(polygoneline2)
-               })
+                    }
+                    googleMap.addPolyline(polygoneline2)
+                })
 
-           } else if(navigationViewModel?.currentWayLoadState ==true && (navigationViewModel?.currentWayOnMap != null)) {
+            } else */
+
+            if(navigationViewModel?.currentWayLoadState ==true && (navigationViewModel?.currentWayOnMap != null)) {
                 mapViewModel.currentWayState = true
                 mapViewModel.currentWay = navigationViewModel?.currentWayOnMap
                 navigationViewModel!!.getAllFixes().observe(this, Observer {
@@ -142,127 +176,112 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
 
     }
 
-    override fun onResume() {
-        startGpsService()
-        Log.d(LOG_TAG,"StartService on resume")
-        mapView.getMapAsync(this)
-        super.onResume()
+    fun showMeOnMap(){
+        try {
+            if (ActivityCompat.checkSelfPermission(this.activity!!.baseContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                makeToastShort("нет прав доступа")
+                return
+            }
+            var newLoc: Location? = mapViewModel.getLocation()
+            val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
+            googleMap.clear()
+
+            googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
+            setCurrentWayOnMap()
+        } catch (ex: Exception){
+            makeToastShort("${ex.toString()}")
+            Log.w(LOG_TAG, ex.toString())
+        }
+
     }
 
-    override fun onClick(v: View?) {
-        if (ActivityCompat.checkSelfPermission(this.activity!!.baseContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            makeToastShort("нет прав доступа")
-            return
-        }
-        when(v?.id) {
-            ru.vanchikov.fitnesinmylife.R.id.fb_GetMyLoc ->{
-                try {
-                    if (ActivityCompat.checkSelfPermission(this.activity!!.baseContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        makeToastShort("нет прав доступа")
-                        return
-                    }
-                    var newLoc: Location? = mapViewModel.getLocation()
-                    val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
+    fun startTrackMyLocation(){
+        try {
+            if(!mapViewModel.listeningWayState) {
+                makeToastLong("Фиксация начата")                                      /******************/
+                navigationViewModel.currentWayOnMap = null
+                navigationViewModel.currentWayLoadState = false
+                mapViewModel.currentWay = null
+                mapViewModel.currentWayState = false
+                mapViewModel.currentWayFixList = emptyList()
+                googleMap.clear()
+                var newLoc: Location? = mapViewModel.getLocation()
+                val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
+                googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))                 //LISTENING WAY
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
+                mapViewModel.startListeningLoc(
+                    mapViewModel.MIN_TIME_BW_UPDATES,
+                    mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
+                )
+                var polygoneline2 = PolylineOptions()
+                mapViewModel.getLiveData().observe(this, Observer {
+
+
+                    //val lastStamp = LatLng(it.last().latitude, it.last().longitude)
+                    //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastStamp,30f),1000*2,null)
                     googleMap.clear()
-                    googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
-                    setCurrentWayOnMap()
-                } catch (ex: Exception){
-                    makeToastShort("${ex.toString()}")
-                    Log.w(LOG_TAG, ex.toString())
-                }
-            }
-            ru.vanchikov.fitnesinmylife.R.id.fb_addWayOnMap ->{
-                try {
-                    if(!mapViewModel.listeningWayState) {
-                        makeToastLong("Фиксация начата")                                      /******************/
-                        navigationViewModel.currentWayOnMap = null
-                        navigationViewModel.currentWayLoadState = false
-                        mapViewModel.currentWay = null
-                        mapViewModel.currentWayState = false
-                        mapViewModel.currentWayFixList = emptyList()
-                        googleMap.clear()
-                        var newLoc: Location? = mapViewModel.getLocation()
-                        val me = LatLng(newLoc!!.latitude, newLoc!!.longitude)
-                        googleMap.addMarker(MarkerOptions().position(me).title("Marker at Me"))                 //LISTENING WAY
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me,30f), 1000*2, null)
-                        mapViewModel.startListeningLoc(
-                            mapViewModel.MIN_TIME_BW_UPDATES,
-                            mapViewModel.MIN_DISTANCE_CHANGE_FOR_UPDATES
-                        )
-                        var polygoneline2 = PolylineOptions()
-                        mapViewModel.getLiveData().observe(this, Observer {
+                    makeToastShort("addDot ${it.size}")
+                    for(a in it)
+                    {
+                        polygoneline2.add(LatLng(a.latitude, a.longitude))
+                        //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
+                        googleMap.addCircle(CircleOptions()
+                            .center(LatLng(a.latitude, a.longitude)).radius(0.5)
+                            .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                            .strokeWidth(1f))
 
-
-                            //val lastStamp = LatLng(it.last().latitude, it.last().longitude)
-                            //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastStamp,30f),1000*2,null)
-                            googleMap.clear()
-                            makeToastShort("addDot ${it.size}")
-                            for(a in it)
-                            {
-                                polygoneline2.add(LatLng(a.latitude, a.longitude))
-                                //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
-                                googleMap.addCircle(CircleOptions()
-                                    .center(LatLng(a.latitude, a.longitude)).radius(0.5)
-                                    .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
-                                    .strokeWidth(1f))
-
-                            }
-                            googleMap.addPolyline(polygoneline2)
-                        })
-
-
-
-                    } else {                                                                                /*******************/
-                        mapViewModel.stopListeningLocUpdate()
-                        var polygoneline = PolylineOptions()
-
-                        var locData= mapViewModel.getLocationData()
-                        mapViewModel.clearData()
-                        mapViewModel.clearLiveData()
-                        for(a in locData)
-                        {
-                            polygoneline.add(LatLng(a.latitude, a.longitude))
-                            //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
-                            googleMap.addCircle(CircleOptions()
-                                .center(LatLng(a.latitude, a.longitude)).radius(0.5)
-                                .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
-                                .strokeWidth(1f))
-
-                        }
-                        googleMap.addPolyline(polygoneline)
-                        var newWay = UserWays(0,navigationViewModel.userAccount!!.userId,0,"newWay",locData[0].time)
-                        try {
-                            navigationViewModel.viewModelScope.launch {
-                            var wayId: Long = navigationViewModel.insertWay(newWay)
-
-
-                            var newFixList = emptyArray<WayFix>()
-                            for (a in locData) {
-                                var wayFix = mapViewModel.convertToWayFix(a, wayId)
-
-                                navigationViewModel.insertWayFix(wayFix)
-                            }
-
-                        }
-                            makeToastLong("Ваш путь зафиксирован")
-                        }catch (ex: java.lang.Exception){
-                            makeToastShort("${ex.toString()}")
-                            Log.d(LOG_TAG,"${ex.toString()}")
-                        }
                     }
-                } catch (ex: Exception){
+                    googleMap.addPolyline(polygoneline2)
+                })
+
+
+
+            } else {                                                                                /*******************/
+                mapViewModel.stopListeningLocUpdate()
+                var polygoneline = PolylineOptions()
+                googleMap.clear()
+                var locData= mapViewModel.getLocationData()
+                mapViewModel.clearData()
+                mapViewModel.clearLiveData()
+                for(a in locData)
+                {
+                    polygoneline.add(LatLng(a.latitude, a.longitude))
+                    //googleMap.addMarker(MarkerOptions().position(LatLng(a.latitude,a.longitude))
+                    googleMap.addCircle(CircleOptions()
+                        .center(LatLng(a.latitude, a.longitude)).radius(0.5)
+                        .fillColor(Color.BLUE).strokeColor(Color.DKGRAY)
+                        .strokeWidth(1f))
+
+                }
+                googleMap.addPolyline(polygoneline)
+                var newWay = UserWays(0,navigationViewModel.userAccount!!.userId,0,"newWay",locData[0].time)
+                try {
+                    navigationViewModel.viewModelScope.launch {
+                        var wayId: Long = navigationViewModel.insertWay(newWay)
+
+
+                        var newFixList = emptyArray<WayFix>()
+                        for (a in locData) {
+                            var wayFix = mapViewModel.convertToWayFix(a, wayId)
+
+                            navigationViewModel.insertWayFix(wayFix)
+                        }
+
+                    }
+                    makeToastLong("Ваш путь зафиксирован")
+                }catch (ex: java.lang.Exception){
                     makeToastShort("${ex.toString()}")
-                    Log.w(LOG_TAG, ex.toString())
+                    Log.d(LOG_TAG,"${ex.toString()}")
                 }
             }
+        } catch (ex: Exception){
+            makeToastShort("${ex.toString()}")
+            Log.w(LOG_TAG, ex.toString())
         }
     }
 
-    override fun onMapReady(map: GoogleMap) {
-        Log.d(LOG_TAG,"OnMapReady")
-        googleMap = map
-        //mapViewModel.currentPos = mapViewModel.getLocation()
+    fun setStartMap(){
 
         if(mapViewModel.currentPos == null) {
             val Moscow = LatLng(55.45, 37.37)
@@ -272,26 +291,14 @@ class MapFragment : Fragment(), com.google.android.gms.maps.OnMapReadyCallback, 
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLoc))
             googleMap.addMarker(MarkerOptions().position(myLoc).title("Me"))
         }
-
-        setCurrentWayOnMap()
-        /*
-     .add(LatLng(-5.0, -30.0)).add(LatLng(-5.0, -20.0))
-    .add(LatLng(5.0, -20.0)).add(LatLng(5.0, -30.0))
-    .color(Color.MAGENTA).width(1f)
-    */
     }
 
-
-
-
-
-    override fun onStop() {
-        super.onStop()
-        if (mapViewModel.getBinder() != null) {
-            activity!!.unbindService(mapViewModel.getServiceConnection())
+    fun chekPermissionsOnAccesFineLoc(){
+        if (ActivityCompat.checkSelfPermission(this.activity!!.baseContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            makeToastShort("нет прав доступа")
+            return
         }
     }
-
 
     private fun startGpsService() {
         serviceIntent = Intent(".GpsServiceApp")

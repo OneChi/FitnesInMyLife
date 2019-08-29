@@ -31,7 +31,7 @@ class ServiceRepository(val service: GpsServiceApp) {
     }
 
     fun clearLiveData(){
-       service.clearData()
+       service.clearLiveData()
     }
 
     fun getLastKnownLoc() : Location? {

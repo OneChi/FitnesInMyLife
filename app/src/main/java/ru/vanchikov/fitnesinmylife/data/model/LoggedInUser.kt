@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "users_table")
 data class LoggedInUser(
-    @PrimaryKey @ColumnInfo(name = "userId") val userId: String,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "userId")  val userId: Long,
     val displayName: String,
     val password : String,
     val email: String

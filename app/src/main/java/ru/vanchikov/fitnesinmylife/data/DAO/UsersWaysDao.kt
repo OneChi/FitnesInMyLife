@@ -27,7 +27,7 @@ interface UsersWaysDao {
     fun getAlphabetizedUsers(): LiveData<List<LoggedInUser>>
 
     @Query("DELETE from users_table WHERE userId = :userId ")
-    fun deleteUser(userId: String) : Int
+    fun deleteUser(userId: Long) : Int
 
     @Query("SELECT * from users_table WHERE ((email = :userlogin ) OR (userId = :userlogin)) AND (password = :userpassword)")
     suspend fun getUserToken(userlogin : String, userpassword : String) : LoggedInUser
@@ -39,7 +39,7 @@ interface UsersWaysDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM users_ways_table where userId = :userId")
-    fun allUserWaysByUserId(userId : String) : LiveData<List<UserWays>>
+    fun allUserWaysByUserId(userId : Long) : LiveData<List<UserWays>>
 
     @Query("SELECT * FROM wayfix_table where wayId = :wayId")
     fun allWayFixByWayId(wayId: Long) : LiveData<List<WayFix>>

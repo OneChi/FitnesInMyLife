@@ -4,12 +4,20 @@
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
             app:startDestination="@id/userPage">
 
-    <fragment android:id="@+id/userPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.UserPage.UserPage"
-              android:label="Home" tools:layout="@layout/fragment_user_page"/>
-    <fragment android:id="@+id/mapPage"
-              class="com.google.android.gms.maps.MapFragment"
-              android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage.MapFragment"
-              android:label="Map" tools:layout="@layout/fragment_map_page"/>
-    <fragment android:id="@+id/storyPage" android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.StoryPage"
-              android:label="Ways" tools:layout="@layout/fragment_story_page"/>
+    <fragment
+            android:id="@+id/userPage"
+            android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.UserPage.UserPage"
+            android:label="Моя страница"
+            tools:layout="@layout/fragment_user_page" />
+    <fragment
+            android:id="@+id/mapPage"
+            android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.MapPage.MapFragment"
+            class="com.google.android.gms.maps.MapFragment"
+            android:label="Карта"
+            tools:layout="@layout/fragment_map_page" />
+    <fragment
+            android:id="@+id/storyPage"
+            android:name="ru.vanchikov.fitnesinmylife.ui.Navigation.fragments.StoryPage.StoryPage"
+            android:label="История"
+            tools:layout="@layout/fragment_story_page" />
 </navigation>

@@ -39,7 +39,7 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
         return dataRepository.getAllUsers()
     }
 
-    fun deleteUserByUserId(userId : String) : Int
+    fun deleteUserByUserId(userId : Long) : Int
     {
         return dataRepository.deleteUserByUserId(userId)
     }
@@ -55,7 +55,7 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
     {
         return dataRepository.deleteAllUsers()
     }
-    fun allUserWaysByUserId(userId: String): LiveData<List<UserWays>>
+    fun allUserWaysByUserId(userId: Long): LiveData<List<UserWays>>
     {
         return dataRepository.allUserWaysByUserId(userId)
     }

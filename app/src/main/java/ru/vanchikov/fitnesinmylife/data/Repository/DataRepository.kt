@@ -80,7 +80,7 @@ class DataRepository(val dataSource: UsersWaysDao) {
         return dataSource.getAlphabetizedUsers()
     }
 
-    fun deleteUserByUserId(userId : String) : Int
+    fun deleteUserByUserId(userId : Long) : Int
     {
         return dataSource.deleteUser(userId)
     }
@@ -96,7 +96,7 @@ class DataRepository(val dataSource: UsersWaysDao) {
     {
         return dataSource.deleteAll()
     }
-    fun allUserWaysByUserId(userId: String): LiveData<List<UserWays>>
+    fun allUserWaysByUserId(userId: Long): LiveData<List<UserWays>>
     {
         return dataSource.allUserWaysByUserId(userId)
     }

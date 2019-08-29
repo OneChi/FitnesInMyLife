@@ -13,7 +13,7 @@ import java.sql.Time
 )])
 data class UserWays(
     @PrimaryKey(autoGenerate = true) val wayId: Long,
-    val userId: String,
+    val userId: Long,
     val coordinate : Long,
     val wayName: String,
     val wayTime : Long

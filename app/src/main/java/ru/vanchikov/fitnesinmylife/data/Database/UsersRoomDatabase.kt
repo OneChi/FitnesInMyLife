@@ -18,7 +18,7 @@ import ru.vanchikov.fitnesinmylife.data.model.WayFix
  * This is the backend. The database. This used to be done by the OpenHelper.
  * The fact that this has very few comments emphasizes its coolness.
  */
-@Database(entities = [LoggedInUser::class,UserWays::class,WayFix::class], version = 2)
+@Database(entities = [LoggedInUser::class,UserWays::class,WayFix::class], version = 3)
 abstract class UsersRoomDatabase : RoomDatabase() {
 
     abstract fun getUsersDao(): UsersWaysDao
@@ -80,10 +80,6 @@ abstract class UsersRoomDatabase : RoomDatabase() {
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
             Log.d("MYDATABASE","INITDBSTART")
-            //thisWaysDao.deleteAll()
-
-            val NewLoggedInUser1 = LoggedInUser("Alex","Onechi","qqqqqq", "a@b.c")
-            thisWaysDao.insert(NewLoggedInUser1)
             Log.d("MYDATABASE","INITDBEND")
 
 

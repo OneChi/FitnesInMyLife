@@ -1,4 +1,4 @@
-package ru.vanchikov.fitnesinmylife
+package ru.vanchikov.fitnesinmylife.ui.login
 
 
 import android.app.Activity
@@ -16,16 +16,16 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
+import ru.vanchikov.fitnesinmylife.R
 import ru.vanchikov.fitnesinmylife.data.UserAccount
 import ru.vanchikov.fitnesinmylife.data.ViewModels.LoginViewModel
 import ru.vanchikov.fitnesinmylife.ui.Navigation.NavigationActivity
-import ru.vanchikov.fitnesinmylife.ui.login.LoggedInUserView
-import ru.vanchikov.fitnesinmylife.ui.login.afterTextChanged
 
 /**
  * A simple [Fragment] subclass.
  */
-class login_fragment : Fragment() {
+class login_page : Fragment(), View.OnClickListener {
 
     lateinit var loginViewModel : LoginViewModel
 
@@ -34,7 +34,7 @@ class login_fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login_fragment, container, false)
+        return inflater.inflate(R.layout.login_fragment, container, false)
     }
 
 
@@ -45,13 +45,14 @@ class login_fragment : Fragment() {
         val password = view.findViewById<EditText>(R.id.password)
         val login = view.findViewById<Button>(R.id.login)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
-
+        val registration  = view.findViewById<Button>(R.id.registration_btn)
+        registration.setOnClickListener(this)
         // TODO: DELETE AFTER TESTING
         username.setText("a@b.c")
         password.setText("qqqqqq")
 
 
-        loginViewModel = ViewModelProviders.of(this)
+        loginViewModel = ViewModelProviders.of(activity!!)
             .get(LoginViewModel::class.java)
 
         loginViewModel.loginFormState.observe(this, Observer {
@@ -138,5 +139,14 @@ class login_fragment : Fragment() {
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(activity!!.applicationContext, errorString, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id){
+            R.id.registration_btn ->{
+                Navigation.findNavController(requireActivity(), R.id.nav_login_host_fragment).navigate(R.id.action_login_fragment_to_registration)
+            }
+        }
+
     }
 }

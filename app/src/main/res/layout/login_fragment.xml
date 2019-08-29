@@ -99,7 +99,7 @@
             app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <Button
-            android:id="@+id/button"
+            android:id="@+id/registration_btn"
             style="@android:style/Widget.Material.Button.Borderless"
             android:layout_width="144dp"
             android:layout_height="45dp"

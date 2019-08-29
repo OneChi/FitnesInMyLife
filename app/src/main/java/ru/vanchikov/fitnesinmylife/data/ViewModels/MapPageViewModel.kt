@@ -89,7 +89,7 @@ class MapPageViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun clearLiveData(){
-        repository.clearData()
+        repository.clearLiveData()
     }
 
     fun getLocation(): Location? {
